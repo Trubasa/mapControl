@@ -1,10 +1,18 @@
 {
   "name": "map-control",
   "description": "fabric封装，进行图片控制于与标记",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "author": "trubasa <1141521502@qq.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "files": [
+    "dist",
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Trubasa/mapControl"
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"

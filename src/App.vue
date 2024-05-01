@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <div>hello world</div>
     <map-control></map-control>
   </div>
 </template>

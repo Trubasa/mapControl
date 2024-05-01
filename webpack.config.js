@@ -1,19 +1,53 @@
 var path = require("path");
 var webpack = require("webpack");
 
+const BUILD_MODE = {
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
+};
+console.log("当前env", process.env.NODE_ENV);
+let curMode = "";
+switch (process.env.NODE_ENV) {
+  case "production":
+    curMode = BUILD_MODE.PRODUCTION;
+    break;
+  case "development":
+  default:
+    curMode = BUILD_MODE.DEVELOPMENT;
+}
+const getEntry = (mode) => {
+  switch (mode) {
+    case BUILD_MODE.PRODUCTION:
+      return "./src/lib/index.js";
+    case BUILD_MODE.DEVELOPMENT:
+    default:
+      return "./src/main.js";
+  }
+};
+const getOutput = (mode) => {
+  switch (mode) {
+    case BUILD_MODE.PRODUCTION:
+      return {
+        path: path.resolve(__dirname, "./dist"),
+        publicPath: "/dist/",
+        filename: "map-control.js",
+        library: "map-control",
+        libraryTarget: "umd",
+        umdNamedDefine: true,
+      };
+    case BUILD_MODE.DEVELOPMENT:
+    default:
+      return {
+        path: path.resolve(__dirname, "./dist"),
+        publicPath: "/dist/",
+        filename: "build.js",
+      };
+  }
+};
+
 module.exports = {
-  entry: "./src/main.js",
-  // entry: "./src/lib/index.js",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    publicPath: "/dist/",
-    filename: "build.js",
-    /* filename: "map-control.js",
-    //增加以下库配置信息
-    library: "map-control",
-    libraryTarget: "umd",
-    umdNamedDefine: true, */
-  },
+  entry: getEntry(curMode),
+  output: getOutput(curMode),
   module: {
     rules: [
       {
