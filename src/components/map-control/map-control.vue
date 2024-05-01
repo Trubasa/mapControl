@@ -12,23 +12,35 @@
 
 <script>
 import { fabric } from "fabric";
-import { useFabricManager } from "./canvas-manager/useFabricManager.js";
 import { canvasUtils } from "./canvas-manager/canvasUtils.js";
-const fabricManager = useFabricManager();
+import { ElcCanvas } from "./canvas-manager/ElcCanvas.js";
 export default {
   name: "map-control",
   components: {},
   props: {},
   data() {
-    return {};
+    return {
+      elcCanvas: null,
+    };
   },
   watch: {},
   computed: {},
   methods: {},
   created() {},
   mounted() {
-    fabricManager.init(this.$refs.container);
+    this.elcCanvas = new ElcCanvas(this.$refs.container);
     var rect = new fabric.Rect({
+      left: 100, //距离画布左侧的距离，单位是像素
+      top: 100, //距离画布上边的距离
+      fill: "red", //填充的颜色
+      width: 100, //方形的宽度
+      height: 100, //方形的高度
+    });
+    this.elcCanvas.fCanvas.add(rect);
+    window.$elcCanvas = this.elcCanvas;
+    // this.elcCanvas = new ElcCanvas(this.$refs.container);
+    // fabricManager.init(this.$refs.container);
+    /* var rect = new fabric.Rect({
       left: 100, //距离画布左侧的距离，单位是像素
       top: 100, //距离画布上边的距离
       fill: "red", //填充的颜色
@@ -43,12 +55,11 @@ export default {
       )
       .then((img) => {
         fabricManager.fCanvas.add(img);
-      });
-
-    const canvas = fabricManager.fCanvas;
+      }); */
+    // const canvas = fabricManager.fCanvas;
     // 设置缩放的初始比例
     // 鼠标滚轮事件的监听器
-    canvasUtils.registerZoomHandler(fabricManager.fCanvas);
+    // canvasUtils.registerZoomHandler(fabricManager.fCanvas);
     /* setTimeout(() => {
       canvasUtils.unregisterZoomHandler(fabricManager.fCanvas);
     }, 3000); */
@@ -61,6 +72,11 @@ export default {
       height: 30, //方形的高度
     });
     canvas.add(rect); */
+  },
+  beforeDestroy() {
+    if (this.elcCanvas) {
+      this.elcCanvas.destroy();
+    }
   },
 };
 </script>

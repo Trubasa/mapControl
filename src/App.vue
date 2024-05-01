@@ -5,8 +5,9 @@
 </template>
 
 <script>
+import MapControl from "./components/map-control/map-control.vue";
 export default {
-  components: {},
+  components: { MapControl },
   name: "app",
   data() {
     return {
