@@ -1,9 +1,9 @@
 import { BaseComponent } from "./BaseComponent";
 
 export class MouseZoomComponent extends BaseComponent {
-  constructor() {
+  constructor(fCanvas) {
     super();
-    this.fCanvas = null;
+    this.init(fCanvas);
   }
 
   onMouseWheel(opt) {

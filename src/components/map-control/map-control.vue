@@ -12,8 +12,8 @@
 
 <script>
 import { fabric } from "fabric";
-import { canvasUtils } from "./canvas-manager/canvasUtils.js";
-import { ElcCanvas } from "./canvas-manager/ElcCanvas.js";
+import { fabricUtils } from "./modules/fabricUtils.js";
+import { ElcCanvas } from "./modules/ElcCanvas.js";
 export default {
   name: "map-control",
   components: {},
@@ -29,15 +29,42 @@ export default {
   created() {},
   mounted() {
     this.elcCanvas = new ElcCanvas(this.$refs.container);
-    var rect = new fabric.Rect({
+    this.elcCanvas.addImage({
+      src: "./public/images/map.webp",
+      scaleY: 1,
+      scaleX: 1,
+      toBack: true,
+    });
+    this.elcCanvas.addImage({
+      id: 123,
+      src: "./public/images/location.png",
+      scaleY: 0.4,
+      scaleX: 0.4,
+    });
+    this.elcCanvas.addImage({
+      src: "./public/images/location.png",
+      left: 100,
+      top: 100,
+      scaleY: 0.4,
+      scaleX: 0.4,
+    });
+    this.elcCanvas.addImage({
+      src: "./public/images/location.png",
+      left: 200,
+      top: 200,
+      scaleY: 0.4,
+      scaleX: 0.4,
+    });
+    /* var rect = new fabric.Rect({
       left: 100, //距离画布左侧的距离，单位是像素
       top: 100, //距离画布上边的距离
       fill: "red", //填充的颜色
       width: 100, //方形的宽度
       height: 100, //方形的高度
     });
-    this.elcCanvas.fCanvas.add(rect);
+    this.elcCanvas.fCanvas.add(rect); */
     window.$elcCanvas = this.elcCanvas;
+
     // this.elcCanvas = new ElcCanvas(this.$refs.container);
     // fabricManager.init(this.$refs.container);
     /* var rect = new fabric.Rect({

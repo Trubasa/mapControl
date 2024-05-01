@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-export const canvasUtils = {
+export const fabricUtils = {
   /** 加载图片 */
   loadImg(imgSrc) {
     return new Promise((resolve, reject) => {
@@ -9,13 +9,6 @@ export const canvasUtils = {
           reject(isError);
           return;
         }
-
-        img.set({
-          left: 0,
-          top: 0,
-          scaleX: 1,
-          scaleY: 1,
-        });
         resolve(img);
       });
     });
