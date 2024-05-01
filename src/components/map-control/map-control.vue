@@ -3,9 +3,9 @@
     <slot> this is slot </slot>
     <canvas
       ref="container"
-      style="border: 1px solid #999"
-      width="800"
-      height="600"
+      :style="customStyle"
+      :width="width"
+      :height="height"
     ></canvas>
   </div>
 </template>
@@ -17,88 +17,68 @@ import { ElcCanvas } from "./modules/ElcCanvas.js";
 export default {
   name: "map-control",
   components: {},
-  props: {},
+  props: {
+    width: {
+      type: Number,
+      default: 800,
+    },
+    height: {
+      type: Number,
+      default: 600,
+    },
+    customStyle: {
+      type: Object,
+      default: () => ({
+        border: "1px solid #000",
+      }),
+    },
+    zoomable: {
+      type: Boolean,
+      default: true,
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       elcCanvas: null,
     };
   },
-  watch: {},
+  watch: {
+    zoomable: {
+      handler(val) {
+        this.setZoomable(val);
+      },
+      immediate: true,
+    },
+    editable: {
+      handler(val) {
+        this.setEditable(val);
+      },
+      immediate: true,
+    },
+  },
   computed: {},
-  methods: {},
+  methods: {
+    setZoomable(val) {
+      if (this.elcCanvas) {
+        this.elcCanvas.mouseZoomComponent.enable = val;
+      }
+    },
+    setEditable(val) {
+      if (this.elcCanvas) {
+        this.elcCanvas.editableComponent.enable = val;
+      }
+    },
+  },
   created() {},
   mounted() {
     this.elcCanvas = new ElcCanvas(this.$refs.container);
-    this.elcCanvas.addImage({
-      src: "./public/images/map.webp",
-      scaleY: 1,
-      scaleX: 1,
-      toBack: true,
-    });
-    this.elcCanvas.addImage({
-      id: 123,
-      src: "./public/images/location.png",
-      scaleY: 0.4,
-      scaleX: 0.4,
-    });
-    this.elcCanvas.addImage({
-      src: "./public/images/location.png",
-      left: 100,
-      top: 100,
-      scaleY: 0.4,
-      scaleX: 0.4,
-    });
-    this.elcCanvas.addImage({
-      src: "./public/images/location.png",
-      left: 200,
-      top: 200,
-      scaleY: 0.4,
-      scaleX: 0.4,
-    });
-    /* var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 100, //方形的宽度
-      height: 100, //方形的高度
-    });
-    this.elcCanvas.fCanvas.add(rect); */
-    window.$elcCanvas = this.elcCanvas;
-
-    // this.elcCanvas = new ElcCanvas(this.$refs.container);
-    // fabricManager.init(this.$refs.container);
-    /* var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 100, //方形的宽度
-      height: 100, //方形的高度
-    });
-    fabricManager.fCanvas.add(rect);
-
-    canvasUtils
-      .loadImg(
-        "https://img0.baidu.com/it/u=3480411234,3896256113&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500"
-      )
-      .then((img) => {
-        fabricManager.fCanvas.add(img);
-      }); */
-    // const canvas = fabricManager.fCanvas;
-    // 设置缩放的初始比例
-    // 鼠标滚轮事件的监听器
-    // canvasUtils.registerZoomHandler(fabricManager.fCanvas);
-    /* setTimeout(() => {
-      canvasUtils.unregisterZoomHandler(fabricManager.fCanvas);
-    }, 3000); */
-    /* let canvas = new fabric.Canvas(this.$refs.container);
-    var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 30, //方形的宽度
-      height: 30, //方形的高度
-    });
-    canvas.add(rect); */
+    this.setZoomable(this.zoomable);
+    this.setEditable(this.editable);
+    this.$emit("ready");
   },
   beforeDestroy() {
     if (this.elcCanvas) {

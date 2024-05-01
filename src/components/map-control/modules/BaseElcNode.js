@@ -12,12 +12,10 @@ export class BaseElcNode {
   }
 
   defaultParameterProcessing(params) {
-    if (params.id) this.id = params.id;
-    /* if (params.toBack) {
-      if (this.fNode) {
-        this.fNode.sendToBack();
-      }
-    } */
+    if (!params.id) {
+      params.id = utils.uuid();
+    }
+    this.id = params.id;
   }
 
   init() {
