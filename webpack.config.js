@@ -1,15 +1,21 @@
 var path = require("path");
 var webpack = require("webpack");
+const htmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const BUILD_MODE = {
   DEVELOPMENT: "development",
   PRODUCTION: "production",
+  DEMO: "demo",
 };
 console.log("当前env", process.env.NODE_ENV);
 let curMode = "";
 switch (process.env.NODE_ENV) {
   case "production":
     curMode = BUILD_MODE.PRODUCTION;
+    break;
+  case "demo":
+    curMode = BUILD_MODE.DEMO;
     break;
   case "development":
   default:
@@ -20,6 +26,7 @@ const getEntry = (mode) => {
     case BUILD_MODE.PRODUCTION:
       return "./src/lib/index.js";
     case BUILD_MODE.DEVELOPMENT:
+    case BUILD_MODE.DEMO:
     default:
       return "./src/main.js";
   }
@@ -35,13 +42,42 @@ const getOutput = (mode) => {
         libraryTarget: "umd",
         umdNamedDefine: true,
       };
+    case BUILD_MODE.DEMO:
+      return {
+        path: path.resolve(__dirname, "./demo"),
+        publicPath: "./",
+        filename: "build.js",
+      };
     case BUILD_MODE.DEVELOPMENT:
     default:
       return {
         path: path.resolve(__dirname, "./dist"),
-        publicPath: "/dist/",
+        publicPath: "./",
         filename: "build.js",
       };
+  }
+};
+
+const getPlugin = (mode) => {
+  switch (mode) {
+    case BUILD_MODE.DEMO:
+      return [
+        new htmlWebpackPlugin({
+          //生成文件
+          template: "demo.html", //按该模板生成
+        }),
+        // 配置 copy-webpack-plugin
+        new CopyWebpackPlugin([
+          {
+            from: path.resolve(__dirname, "public"), // 定义要拷贝的源目录
+            to: path.resolve(__dirname, "demo/public"), // 定义要拷贝到的目标目录
+          },
+        ]),
+      ];
+    case BUILD_MODE.PRODUCTION:
+    case BUILD_MODE.DEVELOPMENT:
+    default:
+      return [];
   }
 };
 
@@ -94,10 +130,14 @@ module.exports = {
   devtool: "#eval-source-map",
 };
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV !== "development") {
   module.exports.devtool = "#source-map";
   // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
+  module.exports.plugins = (
+    module.exports.plugins ||
+    getPlugin(curMode) ||
+    []
+  ).concat([
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: '"production"',
