@@ -10,16 +10,26 @@
       @ready="readyHandle"
     ></map-control>
 
-    <div>
-      <p>tips: 点击切换状态</p>
-      <div @click="state.editable = !state.editable">
-        是否可编辑：{{ state.editable }}
+    <div style="margin-top: 10px">
+      <div style="cursor: pointer">
+        <div @click="state.editable = !state.editable">
+          是否可编辑：{{ state.editable }}
+        </div>
+        <div @click="state.zoomable = !state.zoomable">
+          是否可缩放：{{ state.zoomable }}
+        </div>
+        <div @click="state.movable = !state.movable">
+          是否可拖拽查看：{{ state.movable }}
+        </div>
       </div>
-      <div @click="state.zoomable = !state.zoomable">
-        是否可缩放：{{ state.zoomable }}
-      </div>
-      <div @click="state.movable = !state.movable">
-        是否可拖拽查看：{{ state.movable }}
+      <div style="margin-top: 10px">
+        <div>tips:</div>
+        <div>1.点击文本切换状态</div>
+        <div>
+          2.因为【框选与编辑】和【拖拽查看】事件都占用了鼠标事件，这2个事件一起触发会有冲突，故这里设置为:<br />
+          鼠标左键：【框选与编辑】<br />
+          空格+鼠标左键：【拖拽画布查看】
+        </div>
       </div>
     </div>
   </div>

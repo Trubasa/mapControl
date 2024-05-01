@@ -2,24 +2,39 @@
 
 基于 vue2 封装 fabricjs 的组件
 
-## 使用
+## npm 包方式使用
 
-1. npm 包安装
+安装依赖
 
-```安装
+```
 npm install map-control
 ```
 
-```在main.js中注册
+在 main.js 中注册
+
+```
 import mapControl from "map-control";
 Vue.use(mapControl);
 ```
 
-```在vue文件中使用
+在 vue 文件中使用
+
+```
 <map-control></map-control>
 ```
 
-2. 复制源码使用
+## 复制源码使用
+
+将项目中的 components/map-control 拷贝到 vue2 项目中
+
+引入 map-control.vue 进行使用，其中的引入路径请根据实际情况调整
+
+```
+import MapControl from "./components/map-control/map-control.vue";
+export default {
+  components: { MapControl },
+}
+```
 
 ## 开发
 
@@ -36,6 +51,17 @@ npm run build
 # 发布
 npm public
 ```
+
+## 开发说明
+
+本项目核心逻辑存在 components/map-control/modules 中
+
+- ElcCanvas 封装 fabricjs 与创建画布的主类
+- BaseElcNode 画布内节点的基类
+- BaseComponent 逻辑插件的基类
+- fabricUtils 一些工具方法
+- （各类继承 BaseElecNode 的子类，特征为 Elc 开头，例如：ElcImage）
+- （各类继承 BaseComponent 的逻辑插件，特征为 Component 结尾，例如：MovableComponent、MouseZoomComponent）
 
 ## 相关资料
 

@@ -1,6 +1,5 @@
 <template>
   <div class="map-control">
-    <slot> this is slot </slot>
     <canvas
       ref="container"
       :style="customStyle"
