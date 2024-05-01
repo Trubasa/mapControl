@@ -1,6 +1,6 @@
 import { FImage } from "./ElcImage";
 import { fabricUtils } from "./fabricUtils";
-import { MouseZoomComponent } from "./mouseZoomComponent";
+import { MouseZoomComponent } from "./MouseZoomComponent";
 import { EditableComponent } from "./EditableComponent";
 import { MovableComponent } from "./MovableComponent";
 import { KeyboardEventsComponent } from "./KeyboardEventsComponent";
