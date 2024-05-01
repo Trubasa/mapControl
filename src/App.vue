@@ -6,6 +6,7 @@
       :height="600"
       :editable="state.editable"
       :zoomable="state.zoomable"
+      :movable="state.movable"
       @ready="readyHandle"
     ></map-control>
 
@@ -16,6 +17,9 @@
       </div>
       <div @click="state.zoomable = !state.zoomable">
         是否可缩放：{{ state.zoomable }}
+      </div>
+      <div @click="state.movable = !state.movable">
+        是否可拖拽查看：{{ state.movable }}
       </div>
     </div>
   </div>
@@ -30,8 +34,9 @@ export default {
     return {
       elcCanvas: null,
       state: {
-        editable: false,
+        editable: true,
         zoomable: true,
+        movable: true,
       },
     };
   },

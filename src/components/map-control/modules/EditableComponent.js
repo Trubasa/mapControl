@@ -1,9 +1,13 @@
 import { BaseComponent } from "./BaseComponent";
 
 export class EditableComponent extends BaseComponent {
-  constructor(fCanvas) {
+  constructor(fCanvas, options) {
     super();
-    this.init(fCanvas);
+    this.init(fCanvas, options);
+  }
+
+  get enable() {
+    return this._enable;
   }
 
   set enable(value) {
@@ -20,13 +24,34 @@ export class EditableComponent extends BaseComponent {
     this.fCanvas.requestRenderAll();
   }
 
-  init(fCanvas) {
-    this.fCanvas = fCanvas;
+  onMouseDown(e) {
+    if (!this.enable) {
+      this.clearSelection();
+    }
+    if (this.options && this.options.extraEnableFunc) {
+      if (!this.options.extraEnableFunc()) {
+        this.clearSelection();
+      }
+    }
+  }
+
+  clearSelection() {
+    this.fCanvas.discardActiveObject();
+    this.fCanvas.requestRenderAll();
+  }
+
+  init(elcCanvas, options) {
+    this.elcCanvas = elcCanvas;
+    this.options = options;
+    this.fCanvas = this.elcCanvas.fCanvas;
     this.onAddObjectHandle = this.onAddObject.bind(this);
+    this.onMouseDownHandle = this.onMouseDown.bind(this);
     this.fCanvas.on("object:added", this.onAddObjectHandle);
+    this.fCanvas.on("mouse:down", this.onMouseDownHandle);
   }
   destroy() {
     this.fCanvas.off("object:added", this.onAddObjectHandle);
+    this.fCanvas.off("mouse:down", this.onMouseDownHandle);
   }
 
   onAddObject(e) {

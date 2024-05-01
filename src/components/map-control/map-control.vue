@@ -40,6 +40,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    movable: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -59,6 +63,12 @@ export default {
       },
       immediate: true,
     },
+    movable: {
+      handler(val) {
+        this.setMovable(val);
+      },
+      immediate: true,
+    },
   },
   computed: {},
   methods: {
@@ -72,12 +82,18 @@ export default {
         this.elcCanvas.editableComponent.enable = val;
       }
     },
+    setMovable(val) {
+      if (this.elcCanvas) {
+        this.elcCanvas.movableComponent.enable = val;
+      }
+    },
   },
   created() {},
   mounted() {
     this.elcCanvas = new ElcCanvas(this.$refs.container);
     this.setZoomable(this.zoomable);
     this.setEditable(this.editable);
+    this.setMovable(this.movable);
     this.$emit("ready");
   },
   beforeDestroy() {

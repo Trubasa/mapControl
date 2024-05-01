@@ -25,8 +25,9 @@ export class MouseZoomComponent extends BaseComponent {
     event.preventDefault();
     event.stopPropagation();
   }
-  init(fCanvas) {
-    this.fCanvas = fCanvas;
+  init(elcCanvas) {
+    this.elcCanvas = elcCanvas;
+    this.fCanvas = this.elcCanvas.fCanvas;
     this.onMouseWheelHandle = this.onMouseWheel.bind(this);
     this.fCanvas.on("mouse:wheel", this.onMouseWheelHandle);
   }
