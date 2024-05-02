@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <!-- <h3>功能说明：</h3>
+      <h3>待办清单：</h3>
       <div>
         <input type="checkbox" checked disabled /> 以鼠标位置为中心进行缩放画布
         <br />
@@ -51,7 +51,15 @@
         <input type="checkbox" checked disabled />
         选中物体进行编辑（移动、缩放、多选等，基于fabric.js默认支持）
         <br />
-      </div> -->
+        <input type="checkbox" disabled /> 数据导出导入<br />
+        <input type="checkbox" disabled />
+        支持调整路线锚点后（新增、删除、移动），路线追踪锚点重新渲染<br />
+        <input type="checkbox" disabled />
+        路线锚点保持原比例与尺寸，不随编辑放大缩小、旋转<br />
+        <input type="checkbox" disabled />
+        支持在锚点附近显示文本内容，支持控制显示与关闭<br />
+        <input type="checkbox" disabled /> 自定义右键面板功能<br />
+      </div>
     </div>
   </div>
 </template>
