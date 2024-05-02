@@ -16,6 +16,9 @@ export class ElcPathPoint extends BaseElcNode {
       src: "./public/images/location.png",
       left: 0,
       top: 0,
+      //   lockRotation: true,
+      //   lockScalingY: true,
+      //   lockScalingX: true,
       layer: constant.Layer.PATH,
       ...options,
     };
