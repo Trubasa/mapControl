@@ -25,10 +25,16 @@
           是否可拖拽查看：{{ state.movable }}
         </div>
       </div>
+
+      <h3>功能：</h3>
+      <div>
+        <button @click="selectAllLoactionNode">选择全部的定位点</button><br />
+      </div>
+
       <div style="margin-top: 10px">
         <h3>操作说明:</h3>
         <div>
-          1. 点击上面的配置文本切换状态<br />
+          1. 点击上面【配置】中的文本切换状态<br />
           2. 鼠标左键：【框选与编辑】<br />
           空格+鼠标左键：【拖拽画布查看】<br />
           3. 滚轮：【缩放】<br />
@@ -51,6 +57,7 @@
 
 <script>
 import MapControl from "./components/map-control/map-control.vue";
+import { constant } from "./constant";
 export default {
   components: { MapControl },
   name: "app",
@@ -62,42 +69,77 @@ export default {
         zoomable: true,
         movable: true,
       },
+      path: [
+        { id: 1, x: 100, y: 100 },
+        { id: 2, x: 150, y: 180 },
+        { id: 3, x: 200, y: 200 },
+        { id: 4, x: 250, y: 160 },
+        { id: 5, x: 300, y: 100 },
+        { id: 6, x: 350, y: 140 },
+        { id: 7, x: 400, y: 180 },
+        { id: 8, x: 450, y: 120 },
+        { id: 9, x: 500, y: 200 },
+        { id: 10, x: 550, y: 160 },
+        { id: 11, x: 600, y: 120 },
+        { id: 12, x: 650, y: 180 },
+        { id: 13, x: 400, y: 300 },
+        { id: 14, x: 350, y: 250 },
+        { id: 15, x: 300, y: 220 },
+        { id: 16, x: 250, y: 300 },
+      ],
     };
   },
   methods: {
     readyHandle() {
       console.log("readyHandle");
       this.elcCanvas = this.$refs.mapControlRef.elcCanvas;
-
+      const canvas = this.elcCanvas.fCanvas;
+      // 添加背景图片
       this.elcCanvas.addImage({
         src: "./public/images/map.webp",
         scaleY: 1,
         scaleX: 1,
         toBack: true,
+        layer: constant.Layer.BACK,
       });
-      this.elcCanvas.addImage({
-        id: 1,
-        src: "./public/images/location.png",
-        scaleY: 0.4,
-        scaleX: 0.4,
+      // 添加各个定位点
+      /* this.path.forEach((item) => {
+        this.elcCanvas.addImage({
+          id: item.id,
+          src: "./public/images/location.png",
+          left: item.x,
+          top: item.y,
+          scaleY: 0.4,
+          scaleX: 0.4,
+        });
+      }); */
+
+      // 添加路径
+      this.elcCanvas.addPath({
+        points: this.path,
       });
-      this.elcCanvas.addImage({
-        id: 2,
-        src: "./public/images/location.png",
-        left: 100,
-        top: 100,
-        scaleY: 0.4,
-        scaleX: 0.4,
-      });
-      this.elcCanvas.addImage({
-        id: 3,
-        src: "./public/images/location.png",
-        left: 200,
-        top: 200,
-        scaleY: 0.4,
-        scaleX: 0.4,
-      });
+
+      // 创建一条线段
+      /* var line = new fabric.Line([50, 100, 200, 100], {
+        stroke: "red", // 线条颜色
+        strokeWidth: 2, // 线条宽度
+        selectable: false, // 设置线段不可选中（可选）
+      }); */
+
+      // 创建一条path
+      /* var path = new fabric.Path("M 0 0 L 200 100 L 170 200");
+      // path.set({ left: 120, top: 120 });
+      canvas.add(path); */
+
+      // 将线段添加到画布上
+      // this.elcCanvas.fCanvas.add(line);
+      // 变量赋值给window，方便调试
       window.$elcCanvas = this.elcCanvas;
+    },
+    selectAllLoactionNode() {
+      this.elcCanvas.clearSelectionAndSelectMultipleNodes(
+        this.path.map((ele) => ele.id)
+      ); // 这里数组里是节点的id
     },
   },
   mounted() {},

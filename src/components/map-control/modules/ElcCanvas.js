@@ -4,7 +4,9 @@ import { MouseZoomComponent } from "./MouseZoomComponent";
 import { EditableComponent } from "./EditableComponent";
 import { MovableComponent } from "./MovableComponent";
 import { KeyboardEventsComponent } from "./KeyboardEventsComponent";
+import { LayerComponent } from "./LayerComponnet";
 import { constant } from "../../../constant";
+import { ElcPath } from "./ElcPath";
 
 export class ElcCanvas {
   constructor(canvasDom) {
@@ -14,11 +16,24 @@ export class ElcCanvas {
   reset() {
     if (this.fCanvas) this.fCanvas.clear();
   }
+  /* initLayer() {
+    this.layerDict = {};
+    // 并在 layerDict 中为每个层级创建一个空数组
+    for (const layer in constant.Layer) {
+      // 使用constant.Layer[layer] 获取层级的值，作为键
+      const layerValue = constant.Layer[layer];
+      // 初始化每个层级的值为空数组
+      this.layerDict[layerValue] = new fabric.Group([], {});
+      this.fCanvas.add(this.layerDict[layerValue]);
+    }
+  } */
   init(canvasDom) {
+    // this.initLayer();
     this.nodeMap = new Map();
     this.fCanvas = new fabric.Canvas(canvasDom, {
       preserveObjectStacking: true, // 保持对象的堆叠顺序
     });
+    this.layerComponent = new LayerComponent(this.fCanvas);
     this.mouseZoomComponent = new MouseZoomComponent(this);
     this.editableComponent = new EditableComponent(this, {
       extraEnableFunc: this.extraEditableFunc.bind(this),
@@ -29,6 +44,7 @@ export class ElcCanvas {
     this.keyboardEventsComponent = new KeyboardEventsComponent(this);
   }
   destroy() {
+    this.layerComponent.destroy();
     this.mouseZoomComponent.destroy();
     this.editableComponent.destroy();
     this.movableComponent.destroy();
@@ -36,9 +52,14 @@ export class ElcCanvas {
     this.fCanvas.dispose();
   }
   addImage(options) {
-    const node = new FImage(this.fCanvas, options);
+    const node = new FImage(this, options);
     this.nodeMap.set(node.id, node);
     return node;
+  }
+  addPath(options) {
+    const path = new ElcPath(this, options);
+    this.nodeMap.set(path.id, path);
+    return path;
   }
 
   extraMovableFunc() {
@@ -67,5 +88,27 @@ export class ElcCanvas {
   }
   exportData(extraKeys) {
     return this.fCanvas.toJSON(["id", ...extraKeys]);
+  }
+
+  /** 清空选中并多选节点 */
+  clearSelectionAndSelectMultipleNodes(nodeIds) {
+    this.clearSelection();
+    this.selectMultipleNodes(nodeIds);
+  }
+
+  /** 多选节点 */
+  selectMultipleNodes(nodeIds) {
+    const nodes = nodeIds.map((id) => this.nodeMap.get(id).fNode);
+    this.fCanvas.setActiveObject(
+      new fabric.ActiveSelection(nodes, {
+        canvas: this.fCanvas,
+      })
+    );
+    this.fCanvas.requestRenderAll();
+  }
+  /** 清除选中 */
+  clearSelection() {
+    this.fCanvas.discardActiveObject();
+    this.fCanvas.requestRenderAll();
   }
 }

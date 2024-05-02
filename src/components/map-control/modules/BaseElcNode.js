@@ -15,7 +15,15 @@ export class BaseElcNode {
     if (!params.id) {
       params.id = utils.uuid();
     }
+    if (!params.layer) params.layer = constant.Layer.DEFAULT;
     this.id = params.id;
+  }
+
+  create() {
+    if (this.elcCanvas.layerComponent) {
+      const layer = this.options.layer;
+      this.elcCanvas.layerComponent.addToLayer(layer, this.fNode);
+    }
   }
 
   init() {

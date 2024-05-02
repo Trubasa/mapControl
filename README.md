@@ -67,3 +67,7 @@ npm public
 
 - [fabric 中文教程](https://k21vin.gitee.io/fabric-js-doc/articles/quickstart.html)
 - [fabric 案例 demo](https://gitee.com/k21vin/fabricjs-demo#https://gitee.com/k21vin/fabricjs-demo/blob/master/tutorial/Canvas/controlsAboveOverlay.html)
+
+## tips
+
+- 使用 fabric.Group 设置分组后，便如法单独编辑该分组下的元素
