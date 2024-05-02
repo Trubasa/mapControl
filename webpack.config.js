@@ -52,7 +52,7 @@ const getOutput = (mode) => {
     default:
       return {
         path: path.resolve(__dirname, "./dist"),
-        publicPath: "./",
+        publicPath: "/dist/",
         filename: "build.js",
       };
   }

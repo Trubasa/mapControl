@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <div id="app" style="display: flex">
+    <!-- 左边 -->
     <map-control
       ref="mapControlRef"
       :width="1000"
@@ -10,7 +11,9 @@
       @ready="readyHandle"
     ></map-control>
 
-    <div style="margin-top: 10px">
+    <!-- 右边 -->
+    <div style="margin-left: 20px">
+      <h3>配置:</h3>
       <div style="cursor: pointer">
         <div @click="state.editable = !state.editable">
           是否可编辑：{{ state.editable }}
@@ -23,14 +26,25 @@
         </div>
       </div>
       <div style="margin-top: 10px">
-        <div>tips:</div>
-        <div>1.点击文本切换状态</div>
+        <h3>操作说明:</h3>
         <div>
-          2.因为【框选与编辑】和【拖拽查看】事件都占用了鼠标事件，这2个事件一起触发会有冲突，故这里设置为:<br />
-          鼠标左键：【框选与编辑】<br />
-          空格+鼠标左键：【拖拽画布查看】
+          1. 点击上面的配置文本切换状态<br />
+          2. 鼠标左键：【框选与编辑】<br />
+          空格+鼠标左键：【拖拽画布查看】<br />
+          3. 滚轮：【缩放】<br />
         </div>
       </div>
+
+      <!-- <h3>功能说明：</h3>
+      <div>
+        <input type="checkbox" checked disabled /> 以鼠标位置为中心进行缩放画布
+        <br />
+        <input type="checkbox" checked disabled /> 拖拽画布进行查看
+        <br />
+        <input type="checkbox" checked disabled />
+        选中物体进行编辑（移动、缩放、多选等，基于fabric.js默认支持）
+        <br />
+      </div> -->
     </div>
   </div>
 </template>
@@ -83,50 +97,7 @@ export default {
         scaleY: 0.4,
         scaleX: 0.4,
       });
-      /* var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 100, //方形的宽度
-      height: 100, //方形的高度
-    });
-    this.elcCanvas.fCanvas.add(rect); */
       window.$elcCanvas = this.elcCanvas;
-
-      // this.elcCanvas = new ElcCanvas(this.$refs.container);
-      // fabricManager.init(this.$refs.container);
-      /* var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 100, //方形的宽度
-      height: 100, //方形的高度
-    });
-    fabricManager.fCanvas.add(rect);
-
-    canvasUtils
-      .loadImg(
-        "https://img0.baidu.com/it/u=3480411234,3896256113&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500"
-      )
-      .then((img) => {
-        fabricManager.fCanvas.add(img);
-      }); */
-      // const canvas = fabricManager.fCanvas;
-      // 设置缩放的初始比例
-      // 鼠标滚轮事件的监听器
-      // canvasUtils.registerZoomHandler(fabricManager.fCanvas);
-      /* setTimeout(() => {
-      canvasUtils.unregisterZoomHandler(fabricManager.fCanvas);
-    }, 3000); */
-      /* let canvas = new fabric.Canvas(this.$refs.container);
-    var rect = new fabric.Rect({
-      left: 100, //距离画布左侧的距离，单位是像素
-      top: 100, //距离画布上边的距离
-      fill: "red", //填充的颜色
-      width: 30, //方形的宽度
-      height: 30, //方形的高度
-    });
-    canvas.add(rect); */
     },
   },
   mounted() {},
