@@ -1,15 +1,17 @@
 <template>
-  <div id="app" style="display: flex">
+  <div id="app" style="display: flex; flex-wrap: wrap">
     <!-- 左边 -->
-    <map-control
-      ref="mapControlRef"
-      :width="1000"
-      :height="600"
-      :editable="state.editable"
-      :zoomable="state.zoomable"
-      :movable="state.movable"
-      @ready="readyHandle"
-    ></map-control>
+    <div>
+      <map-control
+        ref="mapControlRef"
+        :width="1000"
+        :height="600"
+        :editable="state.editable"
+        :zoomable="state.zoomable"
+        :movable="state.movable"
+        @ready="readyHandle"
+      ></map-control>
+    </div>
 
     <!-- 右边 -->
     <div style="margin-left: 20px">
@@ -160,4 +162,22 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+/* 默认的左右布局 */
+#app {
+  display: flex;
+}
+
+/* 移动设备视口时的上下布局 */
+@media (max-width: 767px) {
+  #app {
+    display: block;
+  }
+
+  /* 右边部分（现在是下方）的样式调整 */
+  #app > div {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+}
+</style>
