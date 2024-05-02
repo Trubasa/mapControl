@@ -11,6 +11,21 @@ export class BaseElcNode {
     this._id = value;
   }
 
+  /** 选中当前元素 */
+  select() {
+    this.fCanvas.setActiveObject(
+      new fabric.ActiveSelection([this.fNode], {
+        canvas: this.fCanvas,
+      })
+    );
+    this.elcCanvas.refresh();
+  }
+
+  /** 相关联的所有节点 */
+  relevanceNodes() {
+    return [this.fNode];
+  }
+
   defaultParameterProcessing(params) {
     if (!params.id) {
       params.id = utils.uuid();

@@ -59,5 +59,22 @@ export class ElcPath extends BaseElcNode {
     this.create();
   }
 
-  // 这里可以添加其他方法，比如更新路径、添加或移除点等
+  relevanceNodes() {
+    let nodes = [this.fNode, ...this.elcPathPointMap.values()];
+    return nodes;
+  }
+
+  select() {
+    const nodes = [
+      this.fNode,
+      ...this.elcPathPointMap.values().map((ele) => ele.fNode),
+    ];
+
+    this.fCanvas.setActiveObject(
+      new fabric.ActiveSelection(nodes, {
+        canvas: this.fCanvas,
+      })
+    );
+    this.elcCanvas.refresh();
+  }
 }

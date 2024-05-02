@@ -28,7 +28,8 @@
 
       <h3>功能：</h3>
       <div>
-        <button @click="selectAllLoactionNode">选择全部的定位点</button><br />
+        <button @click="selectAllLoactionNode">选中路线以及线上的点</button
+        ><br />
       </div>
 
       <div style="margin-top: 10px">
@@ -87,6 +88,7 @@ export default {
         { id: 15, x: 300, y: 220 },
         { id: 16, x: 250, y: 300 },
       ],
+      elcPath: null,
     };
   },
   methods: {
@@ -115,7 +117,7 @@ export default {
       }); */
 
       // 添加路径
-      this.elcCanvas.addPath({
+      this.elcPath = this.elcCanvas.addPath({
         points: this.path,
       });
 
@@ -137,9 +139,11 @@ export default {
       window.$elcCanvas = this.elcCanvas;
     },
     selectAllLoactionNode() {
-      this.elcCanvas.clearSelectionAndSelectMultipleNodes(
-        this.path.map((ele) => ele.id)
-      ); // 这里数组里是节点的id
+      if (this.elcPath) {
+        this.elcPath.select();
+      } else {
+        console.info("没有this.elcPath");
+      }
     },
   },
   mounted() {},

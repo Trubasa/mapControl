@@ -28,7 +28,7 @@ export class MovableComponent extends BaseComponent {
     vpt[4] += e.clientX - this.lastPosX;
     vpt[5] += e.clientY - this.lastPosY;
 
-    this.fCanvas.requestRenderAll();
+    this.elcCanvas.refresh();
 
     this.lastPosX = e.clientX;
     this.lastPosY = e.clientY;

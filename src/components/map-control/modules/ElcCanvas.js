@@ -90,25 +90,12 @@ export class ElcCanvas {
     return this.fCanvas.toJSON(["id", ...extraKeys]);
   }
 
-  /** 清空选中并多选节点 */
-  clearSelectionAndSelectMultipleNodes(nodeIds) {
-    this.clearSelection();
-    this.selectMultipleNodes(nodeIds);
-  }
-
-  /** 多选节点 */
-  selectMultipleNodes(nodeIds) {
-    const nodes = nodeIds.map((id) => this.nodeMap.get(id).fNode);
-    this.fCanvas.setActiveObject(
-      new fabric.ActiveSelection(nodes, {
-        canvas: this.fCanvas,
-      })
-    );
-    this.fCanvas.requestRenderAll();
-  }
   /** 清除选中 */
   clearSelection() {
     this.fCanvas.discardActiveObject();
+    this.refresh();
+  }
+  refresh() {
     this.fCanvas.requestRenderAll();
   }
 }

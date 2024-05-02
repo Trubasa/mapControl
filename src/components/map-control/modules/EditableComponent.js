@@ -1,9 +1,9 @@
 import { BaseComponent } from "./BaseComponent";
 
 export class EditableComponent extends BaseComponent {
-  constructor(fCanvas, options) {
+  constructor(elcCanvas, options) {
     super();
-    this.init(fCanvas, options);
+    this.init(elcCanvas, options);
   }
 
   get enable() {
@@ -21,7 +21,7 @@ export class EditableComponent extends BaseComponent {
     // 取消所有对象的选中状态
     this.fCanvas.discardActiveObject();
     // 更新画布显示，确保选中状态的变化被正确渲染
-    this.fCanvas.requestRenderAll();
+    this.elcCanvas.refresh();
   }
 
   onMouseDown(e) {
@@ -37,7 +37,7 @@ export class EditableComponent extends BaseComponent {
 
   clearSelection() {
     this.fCanvas.discardActiveObject();
-    this.fCanvas.requestRenderAll();
+    this.elcCanvas.refresh();
   }
 
   init(elcCanvas, options) {
