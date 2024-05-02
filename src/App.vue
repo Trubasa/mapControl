@@ -140,6 +140,7 @@ export default {
     },
     selectAllLoactionNode() {
       if (this.elcPath) {
+        this.elcCanvas.clearSelection();
         this.elcPath.select();
       } else {
         console.info("没有this.elcPath");
