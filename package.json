@@ -1,13 +1,14 @@
 {
   "name": "map-control",
   "description": "fabric封装，进行图片控制于与标记",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "author": "trubasa <1141521502@qq.com>",
   "license": "MIT",
   "private": false,
   "files": [
     "dist",
-    "index.js"
+    "index.js",
+    "src/constant.js"
   ],
   "repository": {
     "type": "git",
