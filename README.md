@@ -2,6 +2,10 @@
 
 基于 vue2 封装 fabricjs 的组件
 
+## 在线 demo
+
+[demo 地址](https://trubasa.github.io/mapControl/)
+
 ## npm 包方式使用
 
 安装依赖
