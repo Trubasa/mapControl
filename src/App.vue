@@ -58,11 +58,12 @@
         选中物体进行编辑（移动、缩放、多选等，基于fabric.js默认支持）
         <br />
         <input type="checkbox" disabled /> 数据导出导入<br />
-        <input type="checkbox" disabled />
-        支持调整路线锚点后（新增、删除、移动），路线追踪锚点重新渲染<br />
-        <input type="checkbox" disabled />
+        <input type="checkbox" disabled /> 动态增减锚点<br />
+        <input type="checkbox" checked disabled />
+        支持调整路线锚点后（移动），路线追踪锚点重新渲染<br />
+        <input type="checkbox" checked disabled />
         路线锚点保持原比例与尺寸，不随编辑放大缩小、旋转<br />
-        <input type="checkbox" disabled />
+        <input type="checkbox" checked disabled />
         支持在锚点附近显示文本内容，支持控制显示与关闭<br />
         <input type="checkbox" disabled /> 自定义右键面板功能<br />
       </div>
