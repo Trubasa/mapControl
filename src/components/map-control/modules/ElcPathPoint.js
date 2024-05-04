@@ -1,6 +1,7 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
 import { constant } from "../../../constant";
+import { ElcText } from "./ElcText";
 export class ElcPathPoint extends BaseElcNode {
   constructor(elcCanvas, options = {}) {
     super();
@@ -10,6 +11,7 @@ export class ElcPathPoint extends BaseElcNode {
   init(elcCanvas, options) {
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
+    this.elcText = "";
     this.options = {
       originX: "center",
       originY: "bottom",
@@ -34,11 +36,16 @@ export class ElcPathPoint extends BaseElcNode {
     this.defaultParameterProcessing(options);
 
     this.loadImg();
+    this.loadText();
   }
   destroy() {
     throw new Error(
       constant.ERROR_TYPE.SUBCLASSES_DO_NOT_IMPLEMENT_CORRESPONDING_METHODS
     );
+  }
+
+  loadText() {
+    this.elcText = new ElcText(this.elcCanvas, this.options);
   }
 
   loadImg() {

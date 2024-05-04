@@ -1,4 +1,4 @@
-import { FImage } from "./ElcImage";
+import { ElcImage } from "./ElcImage";
 import { fabricUtils } from "./fabricUtils";
 import { MouseZoomComponent } from "./MouseZoomComponent";
 import { EditableComponent } from "./EditableComponent";
@@ -52,7 +52,7 @@ export class ElcCanvas {
     this.fCanvas.dispose();
   }
   addImage(options) {
-    const node = new FImage(this, options);
+    const node = new ElcImage(this, options);
     this.nodeMap.set(node.id, node);
     return node;
   }
