@@ -53,6 +53,7 @@ export class ElcText extends BaseElcNode {
       fontSize: 20, // 字体大小
       fill: "#ff5722", // 字体颜色
       fontFamily: "Arial", // 字体样式
+      ...this.options,
     });
     this.fNode = fText;
     this.registerListener();

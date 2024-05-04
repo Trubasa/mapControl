@@ -1,5 +1,5 @@
-import { constant } from "../../../constant";
-import { utils } from "../../../utils";
+import { constant } from "../utils/constant";
+import { utils } from "../utils/utils";
 export class BaseElcNode {
   constructor() {
     this.id = utils.uuid();
@@ -28,10 +28,10 @@ export class BaseElcNode {
     this.fNode.off("deselected", this.onDefaultDeselectHandle);
   }
   onDefaultDeselect() {
-    console.log("change before", this.options.x, this.options.y);
+    // console.log("change before", this.options.x, this.options.y);
     this.options.x = this.fNode.left;
     this.options.y = this.fNode.top;
-    console.log("change after", this.options.x, this.options.y);
+    // console.log("change after", this.options.x, this.options.y);
   }
 
   /** 选中当前元素 */

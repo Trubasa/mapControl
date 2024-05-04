@@ -1,4 +1,4 @@
-import { constant } from "../../../constant";
+import { constant } from "../utils/constant";
 
 export class BaseComponent {
   constructor() {

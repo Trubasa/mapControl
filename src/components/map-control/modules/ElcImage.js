@@ -1,6 +1,6 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
-import { constant } from "../../../constant";
+import { constant } from "../utils/constant";
 export class ElcImage extends BaseElcNode {
   constructor(elcCanvas, options = {}, extra = {}) {
     super();

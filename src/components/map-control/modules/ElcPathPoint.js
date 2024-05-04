@@ -1,8 +1,9 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
-import { constant } from "../../../constant";
+import { constant } from "../utils/constant";
 import { ElcText } from "./ElcText";
 import { ElcImage } from "./ElcImage";
+import { bus } from "../utils/bus";
 export class ElcPathPoint extends BaseElcNode {
   constructor(elcCanvas, options = {}, extra = {}) {
     super();
@@ -15,14 +16,6 @@ export class ElcPathPoint extends BaseElcNode {
     this.fCanvas = elcCanvas.fCanvas;
     this.elcText = "";
     this.options = {
-      originX: "center",
-      originY: "bottom",
-      src: "./public/images/location.png",
-      left: 0,
-      top: 0,
-      //   lockRotation: true,
-      //   lockScalingY: true,
-      //   lockScalingX: true,
       layer: constant.Layer.PATH,
       ...options,
     };
@@ -40,23 +33,68 @@ export class ElcPathPoint extends BaseElcNode {
     this.pathPointImgScaleNum = this.options.pathPointImgScaleNum || 1;
 
     this.loadPoint();
-    this.loadText();
+    this.onPointLabelVisableChange();
+
+    this.onPointLabelVisableChangeHandle =
+      this.onPointLabelVisableChange.bind(this);
+    bus.$on(
+      constant.EVENT_LIST.POINT_LABEL_VISIBLE,
+      this.onPointLabelVisableChangeHandle
+    );
+  }
+
+  onPointLabelVisableChange() {
+    let isShow = true;
+    if (this.elcCanvas.pointLabelVisableComponent) {
+      isShow = this.elcCanvas.pointLabelVisableComponent.enable;
+    }
+    if (isShow) {
+      this.loadText();
+    } else {
+      this.clearText();
+    }
   }
 
   destroy() {
     this.clearPoint();
     this.clearText();
+    bus.$off(
+      constant.EVENT_LIST.POINT_LABEL_VISIBLE,
+      this.onPointLabelVisableChangeHandle
+    );
   }
 
   clearPoint() {
     this.elcImage.destroy();
   }
   clearText() {
-    this.elcText.destroy();
+    if (this.elcText) {
+      this.elcText.destroy();
+    }
   }
 
   loadText() {
-    this.elcText = new ElcText(this.elcCanvas, this.options, this.extra);
+    if (this.canIRenderText()) {
+      this.elcText = new ElcText(
+        this.elcCanvas,
+        {
+          lockMovementX: true,
+          lockMovementY: true,
+          lockScalingX: true,
+          lockScalingY: true,
+          lockRotation: true,
+          ...this.options,
+        },
+        this.extra
+      );
+    }
+  }
+
+  canIRenderText() {
+    if (this.elcCanvas && this.elcCanvas.pointLabelVisableComponent) {
+      return this.elcCanvas.pointLabelVisableComponent.enable;
+    }
+    return true;
   }
 
   relevanceNodes() {
@@ -80,6 +118,9 @@ export class ElcPathPoint extends BaseElcNode {
     const elcImage = new ElcImage(
       this.elcCanvas,
       {
+        originX: "center",
+        originY: "bottom",
+        src: "./public/images/location.png",
         scaleY: this.pathPointImgScaleNum,
         scaleX: this.pathPointImgScaleNum,
         ...this.options,

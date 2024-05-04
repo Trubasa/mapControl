@@ -1,8 +1,8 @@
 import { fabric } from "fabric";
 import { BaseElcNode } from "./BaseElcNode";
 import { ElcPathPoint } from "./ElcPathPoint";
-import { constant } from "../../../constant";
-import { utils } from "../../../utils";
+import { constant } from "../utils/constant";
+import { utils } from "../utils/utils";
 
 export class ElcPath extends BaseElcNode {
   constructor(elcCanvas, options = {}) {
@@ -12,6 +12,7 @@ export class ElcPath extends BaseElcNode {
 
   init(elcCanvas, options) {
     this.debouncedOnDeselect = utils.debounce(this.onDeselect.bind(this), 10);
+    this.debouncedOnSelect = utils.debounce(this.select.bind(this), 10);
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
     this.options = {
@@ -61,6 +62,11 @@ export class ElcPath extends BaseElcNode {
       pathString += `${point[0]} ${point[1]}`;
     });
     this.fNode = new fabric.Path(pathString, {
+      lockMovementX: true,
+      lockMovementY: true,
+      lockScalingX: true,
+      lockScalingY: true,
+      lockRotation: true,
       fill: "transparent",
       stroke: this.options.stroke || "red", // 默认描边颜色为黑色，除非已指定
       strokeWidth: this.options.strokeWidth || 2, // 默认描边宽度为1，除非已指定
@@ -80,10 +86,14 @@ export class ElcPath extends BaseElcNode {
     this.fNode.on("modified", this.onModifiedHandle);
 
     this.fNode.on("deselected", this.debouncedOnDeselect);
+
+    this.onSelectHandle = this.select.bind(this);
+    this.fNode.on("selected", this.onSelectHandle);
   }
   unRegisterListener() {
     this.fNode.off("modified", this.onModifiedHandle);
     this.fNode.off("deselected", this.debouncedOnDeselect);
+    this.fNode.off("selected", this.onSelectHandle);
   }
 
   onModified(e) {}
@@ -93,13 +103,14 @@ export class ElcPath extends BaseElcNode {
   }
 
   updateAndRerender() {
-    console.log("updateAndRerender");
+    // console.log("updateAndRerender");
     this.updatePosition();
     this.destroy();
     this.init(this.elcCanvas, this.options);
   }
 
   updatePosition() {
+    this.elcCanvas.clearSelection();
     this.options.points.forEach((ele) => {
       const elcPathPoint = this.elcPathPointMap.get(ele.id);
       if (elcPathPoint) {
@@ -120,12 +131,14 @@ export class ElcPath extends BaseElcNode {
 
   select() {
     const nodes = this.relevanceNodes();
+    // console.log("nodes", nodes);
 
     this.fCanvas.setActiveObject(
       new fabric.ActiveSelection(nodes, {
         canvas: this.fCanvas,
       })
     );
+    // console.log("path select", this.fCanvas.getActiveObject());
     this.elcCanvas.refresh();
   }
 

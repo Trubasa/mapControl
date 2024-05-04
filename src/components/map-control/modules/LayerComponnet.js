@@ -1,4 +1,4 @@
-import { constant } from "../../../constant";
+import { constant } from "../utils/constant";
 import { BaseComponent } from "./BaseComponent";
 
 export class LayerComponent extends BaseComponent {
@@ -23,7 +23,7 @@ export class LayerComponent extends BaseComponent {
 
   // 添加对象到指定层级
   addToLayer(layerName, object) {
-    console.log("addToLayer", layerName, object.id);
+    // console.log("addToLayer", layerName, object.id);
 
     this.layerDict[layerName].push(object);
     this.fCanvas.add(object);

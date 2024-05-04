@@ -19,4 +19,7 @@ export const constant = {
     [LAYER.DEFAULT]: 200,
     [LAYER.FRONT]: 1000,
   },
+  EVENT_LIST: {
+    POINT_LABEL_VISIBLE: "POINT_LABEL_VISIBLE",
+  },
 };

@@ -9,6 +9,7 @@
         :editable="state.editable"
         :zoomable="state.zoomable"
         :movable="state.movable"
+        :isShowPointText="state.showPointText"
         @ready="readyHandle"
       ></map-control>
     </div>
@@ -26,12 +27,15 @@
         <div @click="state.movable = !state.movable">
           是否可拖拽查看：{{ state.movable }}
         </div>
+        <div @click="state.showPointText = !state.showPointText">
+          是否可见节点文本：{{ state.showPointText }}
+        </div>
       </div>
 
       <h3>功能：</h3>
       <div>
-        <button @click="selectAllLoactionNode">选中路线以及线上的点</button
-        ><br />
+        <button @click="selectAllLoactionNode">选中路线以及线上的点</button>
+        <!-- <button @click="selectBg">选中背景</button><br /> -->
       </div>
 
       <div style="margin-top: 10px">
@@ -68,7 +72,7 @@
 
 <script>
 import MapControl from "./components/map-control/map-control.vue";
-import { constant } from "./constant";
+import { constant } from "./components/map-control/utils/constant";
 export default {
   components: { MapControl },
   name: "app",
@@ -79,6 +83,7 @@ export default {
         editable: true,
         zoomable: true,
         movable: true,
+        showPointText: true,
       },
       path: [
         {
@@ -187,13 +192,18 @@ export default {
       this.elcCanvas = this.$refs.mapControlRef.elcCanvas;
       const canvas = this.elcCanvas.fCanvas;
       // 添加背景图片
-      this.elcCanvas.addImage({
+      this.bg = this.elcCanvas.addImage({
         src: "./public/images/map.webp",
         scaleY: 1,
         scaleX: 1,
-        toBack: true,
         layer: constant.Layer.BACK,
       });
+      /* this.location = this.elcCanvas.addImage({
+        src: "./public/images/location.png",
+        scaleY: 1,
+        scaleX: 1,
+        layer: constant.Layer.DEFAULT,
+      }); */
       // 添加各个定位点
       /* this.path.forEach((item) => {
         this.elcCanvas.addImage({
@@ -233,6 +243,25 @@ export default {
       if (this.elcPath) {
         this.elcCanvas.clearSelection();
         this.elcPath.select();
+        this.elcCanvas.refresh();
+      } else {
+        console.info("没有this.elcPath");
+      }
+    },
+    selectBg() {
+      if (this.elcPath) {
+        this.elcCanvas.clearSelection();
+
+        const nodes = [this.bg.fNode, this.location.fNode];
+
+        const canvas = this.elcCanvas.fCanvas;
+        canvas.setActiveObject(
+          new fabric.ActiveSelection(nodes, {
+            canvas: canvas,
+          })
+        );
+
+        this.elcCanvas.refresh();
       } else {
         console.info("没有this.elcPath");
       }

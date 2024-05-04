@@ -43,6 +43,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isShowPointText: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -68,6 +72,12 @@ export default {
       },
       immediate: true,
     },
+    isShowPointText: {
+      handler(val) {
+        this.setPointTextVisable(val);
+      },
+      immediate: true,
+    },
   },
   computed: {},
   methods: {
@@ -86,6 +96,11 @@ export default {
         this.elcCanvas.movableComponent.enable = val;
       }
     },
+    setPointTextVisable(val) {
+      if (this.elcCanvas) {
+        this.elcCanvas.pointLabelVisableComponent.enable = val;
+      }
+    },
   },
   created() {},
   mounted() {
@@ -93,6 +108,7 @@ export default {
     this.setZoomable(this.zoomable);
     this.setEditable(this.editable);
     this.setMovable(this.movable);
+    this.setPointTextVisable(this.isShowPointText);
     this.$emit("ready");
   },
   beforeDestroy() {

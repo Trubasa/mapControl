@@ -6,8 +6,9 @@ import { MovableComponent } from "./MovableComponent";
 import { KeyboardEventsComponent } from "./KeyboardEventsComponent";
 import { ObjectModifiedComponent } from "./ObjectModifiedComponent";
 import { SelectionComponent } from "./SelectionCopmonent";
+import { PointLabelVisableComponent } from "./PointLabelVisableComponent";
 import { LayerComponent } from "./LayerComponnet";
-import { constant } from "../../../constant";
+import { constant } from "../utils/constant";
 import { ElcPath } from "./ElcPath";
 
 export class ElcCanvas {
@@ -46,6 +47,7 @@ export class ElcCanvas {
     this.objectModifiedComponent = new ObjectModifiedComponent(this);
     this.selectionComponent = new SelectionComponent(this);
     this.keyboardEventsComponent = new KeyboardEventsComponent(this);
+    this.pointLabelVisableComponent = new PointLabelVisableComponent(this);
   }
   destroy() {
     this.layerComponent.destroy();
@@ -55,6 +57,7 @@ export class ElcCanvas {
     this.keyboardEventsComponent.destroy();
     this.objectModifiedComponent.destroy();
     this.selectionComponent.destroy();
+    this.pointLabelVisableComponent.destroy();
     this.destroyNodeHandle();
     this.fCanvas.dispose();
   }
@@ -77,7 +80,7 @@ export class ElcCanvas {
     // 如果用户按下了空格键，就允许拖动
     if (this.keyboardEventsComponent) {
       const pressedKeys = this.keyboardEventsComponent.pressedKeys;
-      console.log(pressedKeys);
+      // console.log(pressedKeys);
       return pressedKeys.has(constant.KEYBOARD_KEY.SPACE);
     } else {
       return true;
