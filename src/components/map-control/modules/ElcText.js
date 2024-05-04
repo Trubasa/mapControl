@@ -1,12 +1,13 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
 export class ElcText extends BaseElcNode {
-  constructor(elcCanvas, options = {}) {
+  constructor(elcCanvas, options = {}, extra = {}) {
     super();
-    this.init(elcCanvas, options);
+    this.init(elcCanvas, options, extra);
   }
-  init(elcCanvas, options) {
+  init(elcCanvas, options, extra) {
     this.elcCanvas = elcCanvas;
+    this.extra = extra;
     this.fCanvas = elcCanvas.fCanvas;
     this.options = {
       ...options,
@@ -16,9 +17,33 @@ export class ElcText extends BaseElcNode {
     this.loadText();
   }
   destroy() {
-    throw new Error(
-      constant.ERROR_TYPE.SUBCLASSES_DO_NOT_IMPLEMENT_CORRESPONDING_METHODS
-    );
+    this.unRegisterListener();
+    this.fCanvas.remove(this.fNode);
+  }
+
+  registerListener() {
+    this.onModifiedHandle = this.onModified.bind(this);
+    this.fNode.on("modified", this.onModifiedHandle);
+
+    this.onDeselectHandle = this.onDeselect.bind(this);
+    this.fNode.on("deselected", this.onDeselectHandle);
+  }
+  unRegisterListener() {
+    if (this.fNode) {
+      this.fNode.off("modified", this.onModifiedHandle);
+      this.fNode.off("deselected", this.onDeselectHandle);
+    }
+  }
+  onDeselect() {
+    if (this.extra && this.extra.deselectFunc) {
+      this.extra.deselectFunc();
+    }
+  }
+
+  onModified(e) {
+    if (this.extra && this.extra.modifiedFunc) {
+      this.extra.modifiedFunc();
+    }
   }
 
   loadText() {
@@ -30,6 +55,7 @@ export class ElcText extends BaseElcNode {
       fontFamily: "Arial", // 字体样式
     });
     this.fNode = fText;
+    this.registerListener();
 
     // 将文本对象添加到画布上
     this.create();

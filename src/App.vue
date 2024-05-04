@@ -209,6 +209,7 @@ export default {
       // 添加路径
       this.elcPath = this.elcCanvas.addPath({
         points: this.path,
+        pathPointImgScaleNum: 0.4,
       });
 
       // 创建一条线段

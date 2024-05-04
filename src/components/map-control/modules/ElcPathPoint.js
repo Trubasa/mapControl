@@ -2,13 +2,15 @@ import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
 import { constant } from "../../../constant";
 import { ElcText } from "./ElcText";
+import { ElcImage } from "./ElcImage";
 export class ElcPathPoint extends BaseElcNode {
-  constructor(elcCanvas, options = {}) {
+  constructor(elcCanvas, options = {}, extra = {}) {
     super();
-    this.init(elcCanvas, options);
+    this.init(elcCanvas, options, extra);
   }
 
-  init(elcCanvas, options) {
+  init(elcCanvas, options, extra) {
+    this.extra = extra;
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
     this.elcText = "";
@@ -33,23 +35,59 @@ export class ElcPathPoint extends BaseElcNode {
     if (this.options.extraEnableFunc) {
       this.enable = this.options.extraEnableFunc();
     }
-    this.defaultParameterProcessing(options);
 
-    this.loadImg();
+    this.defaultParameterProcessing(this.options);
+    this.pathPointImgScaleNum = this.options.pathPointImgScaleNum || 1;
+
+    this.loadPoint();
     this.loadText();
   }
+
   destroy() {
-    throw new Error(
-      constant.ERROR_TYPE.SUBCLASSES_DO_NOT_IMPLEMENT_CORRESPONDING_METHODS
-    );
+    this.clearPoint();
+    this.clearText();
+  }
+
+  clearPoint() {
+    this.elcImage.destroy();
+  }
+  clearText() {
+    this.elcText.destroy();
   }
 
   loadText() {
-    this.elcText = new ElcText(this.elcCanvas, this.options);
+    this.elcText = new ElcText(this.elcCanvas, this.options, this.extra);
   }
 
-  loadImg() {
-    fabricUtils
+  relevanceNodes() {
+    return [this.elcImage.fNode, this.elcText.fNode];
+  }
+
+  resetSomeProp(options) {
+    this.elcImage.fNode.set({
+      scaleY: this.pathPointImgScaleNum,
+      scaleX: this.pathPointImgScaleNum,
+      angle: 0,
+    });
+    this.elcText.fNode.set({
+      scaleX: 1,
+      scaleY: 1,
+      angle: 0,
+    });
+  }
+
+  loadPoint() {
+    const elcImage = new ElcImage(
+      this.elcCanvas,
+      {
+        scaleY: this.pathPointImgScaleNum,
+        scaleX: this.pathPointImgScaleNum,
+        ...this.options,
+      },
+      this.extra
+    );
+    this.elcImage = elcImage;
+    /* fabricUtils
       .loadImg(this.options.src)
       .then((img) => {
         this.fNode = img;
@@ -59,6 +97,6 @@ export class ElcPathPoint extends BaseElcNode {
       })
       .catch((err) => {
         console.error(err);
-      });
+      }); */
   }
 }

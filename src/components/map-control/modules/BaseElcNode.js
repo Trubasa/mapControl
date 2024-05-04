@@ -4,11 +4,34 @@ export class BaseElcNode {
   constructor() {
     this.id = utils.uuid();
   }
-  get enable() {
+  get id() {
     return this._id;
   }
-  set enable(value) {
+  set id(value) {
     this._id = value;
+  }
+
+  /** 获取当前位置 */
+  getPosition() {
+    return {
+      x: this.options.x,
+      y: this.options.y,
+    };
+  }
+
+  /** 选中 */
+  registerDefaultListener() {
+    this.onDefaultDeselectHandle = this.onDefaultDeselect.bind(this);
+    this.fNode.on("deselected", this.onDefaultDeselectHandle);
+  }
+  unregisterDefaultListener() {
+    this.fNode.off("deselected", this.onDefaultDeselectHandle);
+  }
+  onDefaultDeselect() {
+    console.log("change before", this.options.x, this.options.y);
+    this.options.x = this.fNode.left;
+    this.options.y = this.fNode.top;
+    console.log("change after", this.options.x, this.options.y);
   }
 
   /** 选中当前元素 */
@@ -38,6 +61,7 @@ export class BaseElcNode {
     if (this.elcCanvas.layerComponent) {
       const layer = this.options.layer;
       this.elcCanvas.layerComponent.addToLayer(layer, this.fNode);
+      this.registerDefaultListener();
     }
   }
 
@@ -47,6 +71,7 @@ export class BaseElcNode {
     );
   }
   destroy() {
+    this.unregisterDefaultListener();
     throw new Error(
       constant.ERROR_TYPE.SUBCLASSES_DO_NOT_IMPLEMENT_CORRESPONDING_METHODS
     );

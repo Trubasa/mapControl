@@ -4,6 +4,8 @@ import { MouseZoomComponent } from "./MouseZoomComponent";
 import { EditableComponent } from "./EditableComponent";
 import { MovableComponent } from "./MovableComponent";
 import { KeyboardEventsComponent } from "./KeyboardEventsComponent";
+import { ObjectModifiedComponent } from "./ObjectModifiedComponent";
+import { SelectionComponent } from "./SelectionCopmonent";
 import { LayerComponent } from "./LayerComponnet";
 import { constant } from "../../../constant";
 import { ElcPath } from "./ElcPath";
@@ -41,6 +43,8 @@ export class ElcCanvas {
     this.movableComponent = new MovableComponent(this, {
       extraEnableFunc: this.extraMovableFunc.bind(this),
     });
+    this.objectModifiedComponent = new ObjectModifiedComponent(this);
+    this.selectionComponent = new SelectionComponent(this);
     this.keyboardEventsComponent = new KeyboardEventsComponent(this);
   }
   destroy() {
@@ -49,7 +53,14 @@ export class ElcCanvas {
     this.editableComponent.destroy();
     this.movableComponent.destroy();
     this.keyboardEventsComponent.destroy();
+    this.objectModifiedComponent.destroy();
+    this.selectionComponent.destroy();
+    this.destroyNodeHandle();
     this.fCanvas.dispose();
+  }
+  destroyNodeHandle(node) {
+    this.nodeMap.forEach((elcNode) => elcNode.destroy());
+    this.nodeMap.clear();
   }
   addImage(options) {
     const node = new ElcImage(this, options);
@@ -80,6 +91,14 @@ export class ElcCanvas {
     } else {
       return true;
     }
+  }
+
+  hasElcNodeId(id) {
+    return this.nodeMap.has(id);
+  }
+
+  getElcNodeById(id) {
+    return this.nodeMap.get(id);
   }
 
   loadData(data) {

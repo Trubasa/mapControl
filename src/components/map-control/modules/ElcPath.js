@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 import { BaseElcNode } from "./BaseElcNode";
 import { ElcPathPoint } from "./ElcPathPoint";
 import { constant } from "../../../constant";
+import { utils } from "../../../utils";
 
 export class ElcPath extends BaseElcNode {
   constructor(elcCanvas, options = {}) {
@@ -10,15 +11,17 @@ export class ElcPath extends BaseElcNode {
   }
 
   init(elcCanvas, options) {
+    this.debouncedOnDeselect = utils.debounce(this.onDeselect.bind(this), 10);
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
     this.options = {
       layer: constant.Layer.PATH,
       ...options,
     };
-    this.defaultParameterProcessing(options);
+    this.defaultParameterProcessing(this.options);
     this.elcPathPointMap = new Map();
     this.points = this.options.points || [];
+    this.pathPointImgScaleNum = this.options.pathPointImgScaleNum || 1;
 
     this.createPoints();
     this.createPath();
@@ -26,19 +29,27 @@ export class ElcPath extends BaseElcNode {
 
   createPoints() {
     this.points.forEach((point) => {
-      const elcPathPoint = new ElcPathPoint(this.elcCanvas, {
-        scaleY: 0.4,
-        scaleX: 0.4,
-        ...point,
-      });
+      const elcPathPoint = new ElcPathPoint(
+        this.elcCanvas,
+        {
+          pathPointImgScaleNum: this.pathPointImgScaleNum,
+          ...point,
+        },
+        {
+          deselectFunc: this.debouncedOnDeselect,
+        }
+      );
       this.elcPathPointMap.set(elcPathPoint.id, elcPathPoint);
     });
   }
 
   createPath() {
-    const pathPoints = this.points.map((point) => {
-      // const position = point.fNode.getCenterPoint();
+    /* const pathPoints = this.points.map((point) => {
       const position = point;
+      return [position.x, position.y];
+    }); */
+    const pathPoints = this.elcPathPointMap.values().map((elcPathPoint) => {
+      const position = elcPathPoint.elcImage.getPosition();
       return [position.x, position.y];
     });
 
@@ -55,20 +66,60 @@ export class ElcPath extends BaseElcNode {
       strokeWidth: this.options.strokeWidth || 2, // 默认描边宽度为1，除非已指定
       ...this.options,
     });
+    this.registerListener();
     // this.fCanvas.add(this.fNode);
     this.create();
   }
 
+  clearPath() {
+    this.fCanvas.remove(this.fNode);
+  }
+
+  registerListener() {
+    this.onModifiedHandle = this.onModified.bind(this);
+    this.fNode.on("modified", this.onModifiedHandle);
+
+    this.fNode.on("deselected", this.debouncedOnDeselect);
+  }
+  unRegisterListener() {
+    this.fNode.off("modified", this.onModifiedHandle);
+    this.fNode.off("deselected", this.debouncedOnDeselect);
+  }
+
+  onModified(e) {}
+
+  onDeselect() {
+    this.updateAndRerender();
+  }
+
+  updateAndRerender() {
+    console.log("updateAndRerender");
+    this.updatePosition();
+    this.destroy();
+    this.init(this.elcCanvas, this.options);
+  }
+
+  updatePosition() {
+    this.options.points.forEach((ele) => {
+      const elcPathPoint = this.elcPathPointMap.get(ele.id);
+      if (elcPathPoint) {
+        const position = elcPathPoint.elcImage.getPosition();
+        ele.x = position.x;
+        ele.y = position.y;
+      }
+    });
+  }
+
   relevanceNodes() {
-    let nodes = [this.fNode, ...this.elcPathPointMap.values()];
+    let nodes = [this.fNode];
+    this.elcPathPointMap.forEach((elcPathPoint) => {
+      nodes = nodes.concat(elcPathPoint.relevanceNodes());
+    });
     return nodes;
   }
 
   select() {
-    const nodes = [
-      this.fNode,
-      ...this.elcPathPointMap.values().map((ele) => ele.fNode),
-    ];
+    const nodes = this.relevanceNodes();
 
     this.fCanvas.setActiveObject(
       new fabric.ActiveSelection(nodes, {
@@ -76,5 +127,11 @@ export class ElcPath extends BaseElcNode {
       })
     );
     this.elcCanvas.refresh();
+  }
+
+  destroy() {
+    this.unRegisterListener();
+    this.clearPath();
+    this.elcPathPointMap.forEach((ele) => ele.destroy());
   }
 }

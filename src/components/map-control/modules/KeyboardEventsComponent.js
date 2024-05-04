@@ -1,9 +1,9 @@
 import { BaseComponent } from "./BaseComponent";
 
 export class KeyboardEventsComponent extends BaseComponent {
-  constructor(fCanvas) {
+  constructor(elcCanvas) {
     super();
-    this.init(fCanvas);
+    this.init(elcCanvas);
   }
 
   onKeyDown(event) {
