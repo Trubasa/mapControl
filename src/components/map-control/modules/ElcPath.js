@@ -49,10 +49,12 @@ export class ElcPath extends BaseElcNode {
       const position = point;
       return [position.x, position.y];
     }); */
-    const pathPoints = this.elcPathPointMap.values().map((elcPathPoint) => {
-      const position = elcPathPoint.elcImage.getPosition();
-      return [position.x, position.y];
-    });
+    const pathPoints = Array.from(this.elcPathPointMap.values()).map(
+      (elcPathPoint) => {
+        const position = elcPathPoint.elcImage.getPosition();
+        return [position.x, position.y];
+      }
+    );
 
     let pathString = "M ";
     pathPoints.forEach((point, index) => {
