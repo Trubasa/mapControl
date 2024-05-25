@@ -31,4 +31,31 @@ export const utils = {
       }, wait);
     };
   },
+  sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  waitForCondition(
+    conditionFn,
+    failText,
+    timeout,
+    interval,
+  ) {
+    return new Promise((resolve, reject) => {
+      const endTime = Date.now() + timeout; // 设置超时的结束时间
+
+      const checkCondition = () => {
+        if (conditionFn()) {
+          // 如果条件函数返回true，则resolve
+          resolve();
+        } else if (Date.now() > endTime) {
+          // 如果当前时间超过了结束时间，则reject
+          reject(new Error(failText));
+        } else {
+          // 如果条件未满足，且还没到结束时间，间隔一段时间后再次检查
+          setTimeout(checkCondition, interval);
+        }
+      };
+
+      // 初始检查
+      checkCondition();
+    });
+  },
 };

@@ -267,8 +267,14 @@ export default {
         console.info("没有this.elcPath");
       }
     },
+    async sayHello(){
+      console.log('hello')
+    }
   },
-  mounted() {},
+  mounted() {
+    const b = this.sayHello()
+    console.log(b)
+  },
   beforeDestroy() {},
 };
 </script>

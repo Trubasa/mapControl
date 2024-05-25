@@ -15,6 +15,7 @@ export class ElcPath extends BaseElcNode {
     this.debouncedOnSelect = utils.debounce(this.select.bind(this), 10);
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
+    this.fGroup = null;
     this.options = {
       layer: constant.Layer.PATH,
       ...options,
@@ -26,6 +27,26 @@ export class ElcPath extends BaseElcNode {
 
     this.createPoints();
     this.createPath();
+
+    // this.makeGroup();
+  }
+
+  /** 将该组件涉及的所有fabric object 合并成一个group 方便编辑 */
+  makeGroup() {
+    let fNodes = []
+    // await utils.sleep(2000)
+    this.elcPathPointMap.forEach((elcPathPoint) => {
+      /* await utils.waitForCondition(() => {
+        return elcPathPoint.relevanceNodes().every((node) => !!node)
+      }, "等待elcPathPoint加载完成") */
+      let ary = elcPathPoint.relevanceNodes()  // 获取这个elc实例相关的fabric对象
+      fNodes = fNodes.concat(ary)
+    })
+    debugger
+    return
+    fNodes.push(this.fNode)
+
+    this.fGroup = new fabric.Group(fNodes, {})
   }
 
   createPoints() {
@@ -98,7 +119,7 @@ export class ElcPath extends BaseElcNode {
     this.fNode.off("selected", this.onSelectHandle);
   }
 
-  onModified(e) {}
+  onModified(e) { }
 
   onDeselect() {
     this.updateAndRerender();
@@ -124,11 +145,12 @@ export class ElcPath extends BaseElcNode {
   }
 
   relevanceNodes() {
-    let nodes = [this.fNode];
+    /* let nodes = [this.fNode];
     this.elcPathPointMap.forEach((elcPathPoint) => {
       nodes = nodes.concat(elcPathPoint.relevanceNodes());
     });
-    return nodes;
+    return nodes; */
+    return [this.fGroup];
   }
 
   select() {
