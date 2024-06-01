@@ -28,25 +28,31 @@ export class ElcPath extends BaseElcNode {
     this.createPoints();
     this.createPath();
 
-    // this.makeGroup();
+    this.createGroup();
   }
 
   /** 将该组件涉及的所有fabric object 合并成一个group 方便编辑 */
-  makeGroup() {
+  createGroup() {
     let fNodes = []
-    // await utils.sleep(2000)
-    this.elcPathPointMap.forEach((elcPathPoint) => {
-      /* await utils.waitForCondition(() => {
-        return elcPathPoint.relevanceNodes().every((node) => !!node)
-      }, "等待elcPathPoint加载完成") */
-      let ary = elcPathPoint.relevanceNodes()  // 获取这个elc实例相关的fabric对象
-      fNodes = fNodes.concat(ary)
-    })
-    debugger
-    return
-    fNodes.push(this.fNode)
 
-    this.fGroup = new fabric.Group(fNodes, {})
+    utils.waitForCondition(() => {
+      // 所有的fabric节点是否都加载完毕了，因为有一些是异步加载的图片啥的，没法在初始创建的时候立即就绪
+      const flag = this.elcPathPointMap.values().every((elcPathPoint) => {
+        return elcPathPoint.relevanceNodes().every(ele => !!ele)  // 获取这个elc实例相关的fabric对象
+      })
+      return flag
+    }, '等待节点就绪超时').then(() => {
+      let fNodes = []
+      this.elcPathPointMap.values().forEach((elcPathPoint) => {
+        fNodes = fNodes.concat(elcPathPoint.relevanceNodes())
+      })
+      fNodes.push(this.fPath)
+
+      this.fGroup = new fabric.Group(fNodes, {})
+      this.fCanvas.add(this.fGroup)
+
+      this.registerListener();
+    })
   }
 
   createPoints() {
@@ -84,7 +90,7 @@ export class ElcPath extends BaseElcNode {
       }
       pathString += `${point[0]} ${point[1]}`;
     });
-    this.fNode = new fabric.Path(pathString, {
+    this.fPath = new fabric.Path(pathString, {
       lockMovementX: true,
       lockMovementY: true,
       lockScalingX: true,
@@ -95,28 +101,30 @@ export class ElcPath extends BaseElcNode {
       strokeWidth: this.options.strokeWidth || 2, // 默认描边宽度为1，除非已指定
       ...this.options,
     });
-    this.registerListener();
-    // this.fCanvas.add(this.fNode);
-    this.create();
+    this.fCanvas.add(this.fPath);
+    // this.create();
   }
 
   clearPath() {
-    this.fCanvas.remove(this.fNode);
+    this.fCanvas.remove(this.fPath);
+  }
+  clearGroup() {
+    this.fCanvas.remove(this.fGroup);
   }
 
   registerListener() {
     this.onModifiedHandle = this.onModified.bind(this);
-    this.fNode.on("modified", this.onModifiedHandle);
+    this.fGroup.on("modified", this.onModifiedHandle);
 
-    this.fNode.on("deselected", this.debouncedOnDeselect);
+    this.fGroup.on("deselected", this.debouncedOnDeselect);
 
     this.onSelectHandle = this.select.bind(this);
-    this.fNode.on("selected", this.onSelectHandle);
+    this.fGroup.on("selected", this.onSelectHandle);
   }
   unRegisterListener() {
-    this.fNode.off("modified", this.onModifiedHandle);
-    this.fNode.off("deselected", this.debouncedOnDeselect);
-    this.fNode.off("selected", this.onSelectHandle);
+    this.fGroup.off("modified", this.onModifiedHandle);
+    this.fGroup.off("deselected", this.debouncedOnDeselect);
+    this.fGroup.off("selected", this.onSelectHandle);
   }
 
   onModified(e) { }
@@ -133,7 +141,7 @@ export class ElcPath extends BaseElcNode {
   }
 
   updatePosition() {
-    this.elcCanvas.clearSelection();
+    /* this.elcCanvas.clearSelection();
     this.options.points.forEach((ele) => {
       const elcPathPoint = this.elcPathPointMap.get(ele.id);
       if (elcPathPoint) {
@@ -141,7 +149,7 @@ export class ElcPath extends BaseElcNode {
         ele.x = position.x;
         ele.y = position.y;
       }
-    });
+    }); */
   }
 
   relevanceNodes() {
@@ -170,5 +178,6 @@ export class ElcPath extends BaseElcNode {
     this.unRegisterListener();
     this.clearPath();
     this.elcPathPointMap.forEach((ele) => ele.destroy());
+    this.clearGroup()
   }
 }

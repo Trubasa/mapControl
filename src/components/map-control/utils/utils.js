@@ -35,8 +35,8 @@ export const utils = {
   waitForCondition(
     conditionFn,
     failText,
-    timeout,
-    interval,
+    timeout = 2000,
+    interval = 100,
   ) {
     return new Promise((resolve, reject) => {
       const endTime = Date.now() + timeout; // 设置超时的结束时间

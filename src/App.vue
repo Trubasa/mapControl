@@ -250,7 +250,7 @@ export default {
       }
     },
     selectBg() {
-      if (this.elcPath) {
+      /* if (this.elcPath) {
         this.elcCanvas.clearSelection();
 
         const nodes = [this.bg.fNode, this.location.fNode];
@@ -265,15 +265,12 @@ export default {
         this.elcCanvas.refresh();
       } else {
         console.info("没有this.elcPath");
-      }
+      } */
     },
-    async sayHello(){
-      console.log('hello')
-    }
+ 
   },
   mounted() {
-    const b = this.sayHello()
-    console.log(b)
+    
   },
   beforeDestroy() {},
 };
