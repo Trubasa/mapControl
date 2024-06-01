@@ -42,6 +42,8 @@ export default {
 
 ## 开发
 
+环境 node 18.16.0
+
 ```bash
 # 安装依赖
 npm install
