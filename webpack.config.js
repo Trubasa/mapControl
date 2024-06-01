@@ -120,6 +120,7 @@ module.exports = {
   },
   devServer: {
     host: '0.0.0.0',
+    public: 'http://localhost:8080', // 如果不加这行，运行后终端显示的访问地址是http://0.0.0.0:8080,没法点击直接访问，比较麻烦，所以使用这行配置替换控制台的输出
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
