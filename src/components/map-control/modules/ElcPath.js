@@ -33,6 +33,7 @@ export class ElcPath extends BaseElcNode {
     utils.waitForCondition(() => {
       return !!this.fGroup
     }, '等待fGroup就绪超时').then(() => {
+      this.fNode = this.fGroup
       this.create()
     })
   }
@@ -42,7 +43,7 @@ export class ElcPath extends BaseElcNode {
     utils.waitForCondition(() => {
       // 所有的fabric节点是否都加载完毕了，因为有一些是异步加载的图片啥的，没法在初始创建的时候立即就绪
       const flag = this.elcPathPointMap.values().every((elcPathPoint) => {
-        return elcPathPoint.getAllFNodes().every(ele => !!ele)  // 获取这个elc实例相关的fabric对象
+        return elcPathPoint.isFNodesReady()  // 获取这个elc实例相关的fabric对象
       })
       return flag
     }, '等待节点就绪超时').then(() => {
@@ -52,9 +53,10 @@ export class ElcPath extends BaseElcNode {
       })
       fNodes.push(this.fPath)
 
-      this.fGroup = new fabric.Group(fNodes, {})
+      this.fGroup = new fabric.Group(fNodes, {
+        ...this.options
+      })
 
-      this.registerListener();
     })
   }
 
@@ -99,17 +101,31 @@ export class ElcPath extends BaseElcNode {
       lockScalingX: true,
       lockScalingY: true,
       lockRotation: true,
+      strokeUniform: true,
       fill: "transparent",
       stroke: this.options.stroke || "red", // 默认描边颜色为黑色，除非已指定
       strokeWidth: this.options.strokeWidth || 2, // 默认描边宽度为1，除非已指定
       ...this.options,
     });
-    this.fNode = this.fPath
 
   }
 
+  keepPathPointRotation() {
+    const angle = this.fGroup.angle;
+
+    this.elcPathPointMap.values().forEach((elcPathPoint) => {
+      elcPathPoint.keepRotation(angle)
+    })
+
+    this.elcCanvas.refresh()
+  }
+
   getAllFNodes() {
-    return [this.fGroup].filter(ele => !!ele)
+    return [this.fGroup]
+  }
+
+  isFNodesReady() {
+    return this.getAllFNodes().every(ele => !!ele)
   }
 
   clearPath() {
@@ -119,22 +135,10 @@ export class ElcPath extends BaseElcNode {
     this.fCanvas.remove(this.fGroup);
   }
 
-  registerListener() {
-    /* this.onModifiedHandle = this.onModified.bind(this);
-    this.fGroup.on("modified", this.onModifiedHandle);
-
-    this.fGroup.on("deselected", this.debouncedOnDeselect);
-
-    this.onSelectHandle = this.select.bind(this);
-    this.fGroup.on("selected", this.onSelectHandle); */
+  onModified(e) {
+    // console.log("path modified", e);
+    this.keepPathPointRotation();
   }
-  unRegisterListener() {
-    /* this.fGroup.off("modified", this.onModifiedHandle);
-    this.fGroup.off("deselected", this.debouncedOnDeselect);
-    this.fGroup.off("selected", this.onSelectHandle); */
-  }
-
-  onModified(e) { }
 
   onDeselect() {
     // this.updateAndRerender();
@@ -172,7 +176,6 @@ export class ElcPath extends BaseElcNode {
   }
 
   destroy() {
-    this.unRegisterListener();
     this.clearPath();
     this.elcPathPointMap.forEach((ele) => ele.destroy());
     this.clearGroup()

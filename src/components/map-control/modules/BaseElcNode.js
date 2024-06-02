@@ -22,6 +22,7 @@ export class BaseElcNode {
   /** 选中 */
   registerDefaultListener() {
     this.onDefaultDeselectHandle = this.onDefaultDeselect.bind(this);
+    // console.log("this.options", this.options)
     this.fNode.on("deselected", this.onDefaultDeselectHandle);
   }
   unregisterDefaultListener() {
@@ -47,6 +48,10 @@ export class BaseElcNode {
   /** 相关联的所有节点 */
   getAllFNodes() {
     return [this.fNode];
+  }
+
+  isFNodesReady() {
+    return this.getAllFNodes().every(ele => !!ele)
   }
 
   defaultParameterProcessing(params) {

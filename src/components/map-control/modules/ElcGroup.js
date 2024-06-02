@@ -1,17 +1,17 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabric } from 'fabric'; // 确保你已经安装了fabric.js
 import { constant } from "../utils/constant";
+import { utils } from "../utils/utils";
 
 export class ElcGroup extends BaseElcNode {
-    constructor(elcCanvas, elements = [], options = {}, extra = {}) {
+    constructor(elcCanvas, options = {}, extra = {}) {
         super();
-        this.init(elcCanvas, elements, options, extra);
+        this.init(elcCanvas, options, extra);
     }
 
-    init(elcCanvas, elements, options, extra) {
+    init(elcCanvas, options, extra) {
         this.elcCanvas = elcCanvas;
         this.fCanvas = elcCanvas.fCanvas;
-        this.elements = elements;
         this.extra = extra;
         this.options = {
             ...options,
@@ -19,7 +19,19 @@ export class ElcGroup extends BaseElcNode {
         this.fGroup = null
         this.defaultParameterProcessing(options);
 
+        this.createGroup()
+        utils.waitForCondition(() => {
+            return !!this.fGroup
+        }, '等待group元素加载超时').then(() => {
+            this.create()
+        })
+    }
 
+    createGroup() {
+        this.fGroup = new fabric.Group([], {
+            ...this.options
+        })
+        this.fNode = this.fGroup
     }
 
     destroy() {
@@ -27,35 +39,9 @@ export class ElcGroup extends BaseElcNode {
         this.fCanvas.remove(this.fNode);
     }
 
-    registerListener() {
-        this.onModifiedHandle = this.onModified.bind(this);
-        this.fNode.on("modified", this.onModifiedHandle);
-
-        this.onDeselectHandle = this.onDeselect.bind(this);
-        this.fNode.on("deselected", this.onDeselectHandle);
-    }
-
-    unRegisterListener() {
-        if (this.fNode) {
-            this.fNode.off("modified", this.onModifiedHandle);
-            this.fNode.off("deselected", this.onDeselectHandle);
-        }
-    }
-
-    onDeselect() {
-        if (this.extra && this.extra.deselectFunc) {
-            this.extra.deselectFunc();
-        }
-    }
-
-    onModified(e) {
-        if (this.extra && this.extra.modifiedFunc) {
-            this.extra.modifiedFunc();
-        }
-    }
-
-    addElcNode() {
-
+    addElcNode(elcNode) {
+        const fNode = elcNode.fNode
+        this.fGroup.addWithUpdate(fNode)
     }
 
 

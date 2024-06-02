@@ -24,12 +24,15 @@ export class LayerComponent extends BaseComponent {
   // 添加对象到指定层级
   addToLayer(layerName, object) {
     // console.log("addToLayer", layerName, object.id);
+    if (!layerName) {
+      layerName = constant.Layer.DEFAULT
+    }
 
     this.layerDict[layerName].push(object);
     this.fCanvas.add(object);
     object.moveTo(constant.LAYER_VALUE[layerName]);
-    console.log("layerName", layerName)
-    console.log("constant.LAYER_VALUE[layerName]", constant.LAYER_VALUE[layerName])
+    /* console.log("layerName", layerName)
+    console.log("constant.LAYER_VALUE[layerName]", constant.LAYER_VALUE[layerName]) */
   }
 
   // 从指定层级移除对象

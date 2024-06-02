@@ -1,11 +1,6 @@
 <template>
   <div class="map-control">
-    <canvas
-      ref="container"
-      :style="customStyle"
-      :width="width"
-      :height="height"
-    ></canvas>
+    <canvas ref="container" :style="customStyle" :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -102,14 +97,14 @@ export default {
       }
     },
   },
-  created() {},
+  created() { },
   mounted() {
     this.elcCanvas = new ElcCanvas(this.$refs.container);
     this.setZoomable(this.zoomable);
     this.setEditable(this.editable);
     this.setMovable(this.movable);
     this.setPointTextVisable(this.isShowPointText);
-    this.$emit("ready");
+    this.$emit("ready", this.elcCanvas);
   },
   beforeDestroy() {
     if (this.elcCanvas) {
@@ -119,6 +114,5 @@ export default {
 };
 </script>
 <style scoped>
-.map-control {
-}
+.map-control {}
 </style>

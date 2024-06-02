@@ -101,6 +101,19 @@ export class ElcPathPoint extends BaseElcNode {
     return [this.elcImage.fNode, this.elcText.fNode];
   }
 
+  isFNodesReady() {
+    return this.getAllFNodes().every(ele => !!ele)
+  }
+
+  keepRotation(angle) {
+    this.elcImage.fNode.set({
+      angle: -angle,
+    });
+    this.elcText.fNode.set({
+      angle: -angle,
+    });
+  }
+
   resetSomeProp(options) {
     this.elcImage.fNode.set({
       scaleY: this.pathPointImgScaleNum,

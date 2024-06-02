@@ -2,7 +2,7 @@
   <div id="app" style="display: flex; flex-wrap: wrap">
     <!-- 左边 -->
     <div>
-      <map-control ref="mapControlRef" :width="1000" :height="600" :editable="state.editable" :zoomable="state.zoomable"
+      <map-control ref="mapControlRef" :width="800" :height="600" :editable="state.editable" :zoomable="state.zoomable"
         :movable="state.movable" :isShowPointText="state.showPointText" @ready="readyHandle"></map-control>
     </div>
 
@@ -26,6 +26,14 @@
 
       <h3>功能：</h3>
       <div>
+        <div>
+          路线transform参数:<br>
+          <pre>
+ {{ elcPathTransformOptions }}
+          </pre>
+          <button @click="saveTransformOptions">保存参数</button>
+          <button @click="loadTransformOptions">加载上次保存的参数</button>
+        </div>
         <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
         <!-- <button @click="selectBg">选中背景</button><br /> -->
       </div>
@@ -65,7 +73,9 @@
 
 <script>
 import MapControl from "./components/map-control/map-control.vue";
+import { fabricUtils } from "./components/map-control/modules/fabricUtils";
 import { constant } from "./components/map-control/utils/constant";
+import { utils } from "./components/map-control/utils/utils";
 export default {
   components: { MapControl },
   name: "app",
@@ -177,12 +187,46 @@ export default {
         },
       ],
       elcPath: null,
+      elcCanvas: null,
+      elcPathTransformOptions: {}
     };
   },
   methods: {
-    readyHandle() {
+    saveTransformOptions() {
+      localStorage.setItem('elcPathTransformOptions', JSON.stringify(this.elcPathTransformOptions))
+    },
+    loadTransformOptions() {
+      const data = localStorage.getItem('elcPathTransformOptions')
+      if (data) {
+        const options = JSON.parse(data)
+        this.elcPathTransformOptions = options
+        this.elcPath.fNode.set(this.elcPathTransformOptions)
+        this.elcPath.keepPathPointRotation()
+      }
+    },
+    objectModifiedHandle(e) {
+      // console.log(e)
+      if (e.target.id == 'my-path-1') {
+        const fNodeOptions = fabricUtils.getOptionsFromFNode(e.target)
+        console.log("fNodeOptions", fNodeOptions)
+        this.elcPathTransformOptions = fNodeOptions
+
+        /* fabricUtils.rotateGroupKeepElementsFixed(e.target, e.target.angle, e.target.scaleX, e.target.scaleY)
+        this.elcCanvas.refresh() */
+      }
+    },
+    registerBusEvent() {
+      this.elcCanvas.bus.$on(constant.EVENT_LIST.OBJECT_MODIFIED, this.objectModifiedHandle)
+    },
+    unRegisterBusEvent() {
+      this.elcCanvas.bus.$off(constant.EVENT_LIST.OBJECT_MODIFIED, this.objectModifiedHandle)
+    },
+    readyHandle(elcCanvas) {
       console.log("readyHandle");
-      this.elcCanvas = this.$refs.mapControlRef.elcCanvas;
+      // this.elcCanvas = this.$refs.mapControlRef.elcCanvas;
+      this.elcCanvas = elcCanvas;
+
+      this.registerBusEvent()
       const canvas = this.elcCanvas.fCanvas;
       // 添加背景图片
       this.bg = this.elcCanvas.addImage({
@@ -211,9 +255,31 @@ export default {
 
       // 添加路径
       this.elcPath = this.elcCanvas.addPath({
+        id: 'my-path-1',
         points: this.path,
         pathPointImgScaleNum: 0.4,
       });
+      utils.waitForCondition(() => {
+        return this.elcPath.isFNodesReady()
+      }, '等待elcPath超时').then(() => {
+        const fNodeOptions = fabricUtils.getOptionsFromFNode(this.elcPath.fNode)
+        console.log("fNodeOptions", fNodeOptions)
+        this.elcPathTransformOptions = fNodeOptions
+      })
+
+
+      /* this.elcGroup = this.elcCanvas.addGroup({
+        id: 'group-1',
+      })
+ 
+      utils.waitForCondition(() => {
+        return this.elcPath.getAllFNodes().length > 0
+      }, '等待elcPath超时').then(() => {
+        this.elcGroup.addElcNode(this.elcPath)
+        this.elcGroup.fNode.set({
+          scaleX: 1
+        })
+      }) */
 
       // 创建一条线段
       /* var line = new fabric.Line([50, 100, 200, 100], {
@@ -265,7 +331,9 @@ export default {
   mounted() {
 
   },
-  beforeDestroy() { },
+  beforeDestroy() {
+    this.unRegisterBusEvent()
+  },
 };
 </script>
 

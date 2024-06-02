@@ -1,3 +1,5 @@
+import { bus } from "../utils/bus";
+import { constant } from "../utils/constant";
 import { BaseComponent } from "./BaseComponent";
 
 export class ObjectModifiedComponent extends BaseComponent {
@@ -13,9 +15,11 @@ export class ObjectModifiedComponent extends BaseComponent {
 
   nofityNodeModified(event) {
     const objects = event.target._objects ? Array.from(event.target._objects) : [event.target];
-
-
-    console.log(`对象被修改: `, objects);
+    console.log(`对象被修改: `, event.target);
+    console.log(`对象数组被修改: `, objects);
+    bus.$emit(constant.EVENT_LIST.OBJECT_MODIFIED, {
+      target: event.target
+    })
     objects.forEach((object) => {
       const id = object.id;
       const targetElcNode = this.elcCanvas.getElcNodeById(id);

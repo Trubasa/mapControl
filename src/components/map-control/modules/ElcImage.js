@@ -46,7 +46,11 @@ export class ElcImage extends BaseElcNode {
   }
 
   getAllFNodes() {
-    return [this.fNode].filter(ele => !!ele)
+    return [this.fNode]
+  }
+
+  isFNodesReady() {
+    return this.getAllFNodes().every(ele => !!ele)
   }
 
   loadImg() {
@@ -54,7 +58,9 @@ export class ElcImage extends BaseElcNode {
       .loadImg(this.options.src)
       .then((img) => {
         this.fNode = img;
-        img.set(this.options);
+        img.set({
+          ...this.options
+        },);
         // this.fCanvas.add(img);
         this.registerListener();
         this.create();

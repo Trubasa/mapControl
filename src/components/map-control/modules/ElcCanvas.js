@@ -10,6 +10,8 @@ import { PointLabelVisableComponent } from "./PointLabelVisableComponent";
 import { LayerComponent } from "./LayerComponnet";
 import { constant } from "../utils/constant";
 import { ElcPath } from "./ElcPath";
+import { ElcGroup } from "./ElcGroup";
+import { bus } from "../utils/bus";
 
 export class ElcCanvas {
   constructor(canvasDom) {
@@ -31,6 +33,7 @@ export class ElcCanvas {
     }
   } */
   init(canvasDom) {
+    this.bus = bus
     // this.initLayer();
     this.nodeMap = new Map();
     this.fCanvas = new fabric.Canvas(canvasDom, {
@@ -74,6 +77,11 @@ export class ElcCanvas {
     const path = new ElcPath(this, options);
     this.nodeMap.set(path.id, path);
     return path;
+  }
+  addGroup(options) {
+    const group = new ElcGroup(this, options);
+    this.nodeMap.set(group.id, group)
+    return group;
   }
 
   extraMovableFunc() {
