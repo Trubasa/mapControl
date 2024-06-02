@@ -10,9 +10,7 @@ export class ElcImage extends BaseElcNode {
     this.elcCanvas = elcCanvas;
     this.fCanvas = elcCanvas.fCanvas;
     this.extra = extra;
-    this.options = {
-      ...options,
-    };
+    this.options = options;
     this.defaultParameterProcessing(options);
 
     this.loadImg();
@@ -45,6 +43,10 @@ export class ElcImage extends BaseElcNode {
     if (this.extra && this.extra.modifiedFunc) {
       this.extra.modifiedFunc();
     }
+  }
+
+  getAllFNodes() {
+    return [this.fNode].filter(ele => !!ele)
   }
 
   loadImg() {

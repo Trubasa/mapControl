@@ -28,6 +28,8 @@ export class LayerComponent extends BaseComponent {
     this.layerDict[layerName].push(object);
     this.fCanvas.add(object);
     object.moveTo(constant.LAYER_VALUE[layerName]);
+    console.log("layerName", layerName)
+    console.log("constant.LAYER_VALUE[layerName]", constant.LAYER_VALUE[layerName])
   }
 
   // 从指定层级移除对象

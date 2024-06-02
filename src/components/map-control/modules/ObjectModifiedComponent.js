@@ -12,9 +12,11 @@ export class ObjectModifiedComponent extends BaseComponent {
   }
 
   nofityNodeModified(event) {
-    const objects = Array.from(event.target._objects || []);
+    const objects = event.target._objects ? Array.from(event.target._objects) : [event.target];
+
+
+    console.log(`对象被修改: `, objects);
     objects.forEach((object) => {
-      console.log(`对象被修改: `, object.id);
       const id = object.id;
       const targetElcNode = this.elcCanvas.getElcNodeById(id);
       if (targetElcNode) {

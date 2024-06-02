@@ -69,6 +69,11 @@ npm public
 - （各类继承 BaseElecNode 的子类，特征为 Elc 开头，例如：ElcImage）
 - （各类继承 BaseComponent 的逻辑插件，特征为 Component 结尾，例如：MovableComponent、MouseZoomComponent）
 
+### BaseElcNode 
+
+`自定义的节点`继承这个类后，在绘制完成后调用这个节点的 create 方法，将自定的内容渲染到画布中。所以`自定义节点`需要提供 getAllFNodes 方法，让 create 能够指导有多少个元素需要添加、添加到哪个图层上。
+
+
 ## 相关资料
 
 - [fabric 中文教程](https://k21vin.gitee.io/fabric-js-doc/articles/quickstart.html)

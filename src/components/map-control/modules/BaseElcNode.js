@@ -29,8 +29,8 @@ export class BaseElcNode {
   }
   onDefaultDeselect() {
     // console.log("change before", this.options.x, this.options.y);
-    this.options.x = this.fNode.left;
-    this.options.y = this.fNode.top;
+    // this.options.x = this.fNode.left;
+    // this.options.y = this.fNode.top;
     // console.log("change after", this.options.x, this.options.y);
   }
 
@@ -45,7 +45,7 @@ export class BaseElcNode {
   }
 
   /** 相关联的所有节点 */
-  relevanceNodes() {
+  getAllFNodes() {
     return [this.fNode];
   }
 
@@ -60,7 +60,12 @@ export class BaseElcNode {
   create() {
     if (this.elcCanvas.layerComponent) {
       const layer = this.options.layer;
-      this.elcCanvas.layerComponent.addToLayer(layer, this.fNode);
+      const fNodes = this.getAllFNodes()
+
+      fNodes.forEach(ele => {
+        this.elcCanvas.layerComponent.addToLayer(layer, ele);
+      })
+
       this.registerDefaultListener();
     }
   }

@@ -2,16 +2,8 @@
   <div id="app" style="display: flex; flex-wrap: wrap">
     <!-- 左边 -->
     <div>
-      <map-control
-        ref="mapControlRef"
-        :width="1000"
-        :height="600"
-        :editable="state.editable"
-        :zoomable="state.zoomable"
-        :movable="state.movable"
-        :isShowPointText="state.showPointText"
-        @ready="readyHandle"
-      ></map-control>
+      <map-control ref="mapControlRef" :width="1000" :height="600" :editable="state.editable" :zoomable="state.zoomable"
+        :movable="state.movable" :isShowPointText="state.showPointText" @ready="readyHandle"></map-control>
     </div>
 
     <!-- 右边 -->
@@ -34,7 +26,7 @@
 
       <h3>功能：</h3>
       <div>
-        <button @click="selectAllLoactionNode">选中路线以及线上的点</button>
+        <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
         <!-- <button @click="selectBg">选中背景</button><br /> -->
       </div>
 
@@ -228,7 +220,8 @@ export default {
         stroke: "red", // 线条颜色
         strokeWidth: 2, // 线条宽度
         selectable: false, // 设置线段不可选中（可选）
-      }); */
+      });
+      this.elcCanvas.fCanvas.add(line); */
 
       // 创建一条path
       /* var path = new fabric.Path("M 0 0 L 200 100 L 170 200");
@@ -241,13 +234,13 @@ export default {
       window.$elcCanvas = this.elcCanvas;
     },
     selectAllLoactionNode() {
-      if (this.elcPath) {
-        this.elcCanvas.clearSelection();
-        this.elcPath.select();
-        this.elcCanvas.refresh();
-      } else {
-        console.info("没有this.elcPath");
-      }
+      /*  if (this.elcPath) {
+         this.elcCanvas.clearSelection();
+         this.elcPath.select();
+         this.elcCanvas.refresh();
+       } else {
+         console.info("没有this.elcPath");
+       } */
     },
     selectBg() {
       /* if (this.elcPath) {
@@ -267,12 +260,12 @@ export default {
         console.info("没有this.elcPath");
       } */
     },
- 
+
   },
   mounted() {
-    
+
   },
-  beforeDestroy() {},
+  beforeDestroy() { },
 };
 </script>
 
@@ -289,7 +282,7 @@ export default {
   }
 
   /* 右边部分（现在是下方）的样式调整 */
-  #app > div {
+  #app>div {
     margin-left: 0;
     margin-top: 20px;
   }

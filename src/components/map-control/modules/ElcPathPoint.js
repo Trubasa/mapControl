@@ -97,7 +97,7 @@ export class ElcPathPoint extends BaseElcNode {
     return true;
   }
 
-  relevanceNodes() {
+  getAllFNodes() {
     return [this.elcImage.fNode, this.elcText.fNode];
   }
 

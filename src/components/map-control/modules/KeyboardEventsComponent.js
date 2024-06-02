@@ -30,14 +30,14 @@ export class KeyboardEventsComponent extends BaseComponent {
     // 当鼠标移入时，绑定键盘事件
     document.addEventListener("keydown", this.onKeyDownHandle);
     document.addEventListener("keyup", this.onKeyUpHandle);
-    console.log("keyboardEvents Component mouseenter")
+    // console.log("keyboardEvents Component mouseenter")
   }
 
   onMouseLeave() {
     // 当鼠标移出时，解绑键盘事件
     document.removeEventListener("keydown", this.onKeyDownHandle);
     document.removeEventListener("keyup", this.onKeyUpHandle);
-    console.log("keyboardEvents Component mouseleave")
+    // console.log("keyboardEvents Component mouseleave")
   }
 
   init(elcCanvas) {
