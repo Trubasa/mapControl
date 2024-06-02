@@ -1,5 +1,6 @@
 import { BaseElcNode } from "./BaseElcNode";
 import { fabricUtils } from "./fabricUtils";
+import { utils } from "../utils/utils";
 import { constant } from "../utils/constant";
 import { ElcText } from "./ElcText";
 import { ElcImage } from "./ElcImage";
@@ -33,6 +34,7 @@ export class ElcPathPoint extends BaseElcNode {
     this.pathPointImgScaleNum = this.options.pathPointImgScaleNum || 1;
 
     this.loadPoint();
+    this.loadText();
     this.onPointLabelVisableChange();
 
     this.onPointLabelVisableChangeHandle =
@@ -48,11 +50,17 @@ export class ElcPathPoint extends BaseElcNode {
     if (this.elcCanvas.pointLabelVisableComponent) {
       isShow = this.elcCanvas.pointLabelVisableComponent.enable;
     }
-    if (isShow) {
-      this.loadText();
-    } else {
-      this.clearText();
-    }
+    utils.waitForCondition(() => {
+      return this.elcText && this.elcText.isFNodesReady();
+    }).then(() => {
+      if (isShow) {
+        this.elcText.changeOpacity(1)
+      } else {
+        this.elcText.changeOpacity(0)
+      }
+      this.elcCanvas.refresh();
+    })
+
   }
 
   destroy() {

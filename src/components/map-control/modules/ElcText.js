@@ -46,6 +46,17 @@ export class ElcText extends BaseElcNode {
     }
   }
 
+  getAllFNodes() {
+    return [this.fNode];
+  }
+  isFNodesReady() {
+    return true;
+  }
+
+  changeOpacity(opacity) {
+    this.fNode.set({ opacity });
+  }
+
   loadText() {
     const fText = new fabric.Text(this.options.text, {
       left: this.options.x, // 文本的水平位置

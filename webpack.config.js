@@ -110,6 +110,18 @@ module.exports = {
           name: "[name].[ext]?[hash]",
         },
       },
+      {
+        test: /\.(ttf|eot|woff|woff2|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/', // 字体文件的输出路径
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {

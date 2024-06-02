@@ -7,20 +7,20 @@
     </div>
 
     <!-- 右边 -->
-    <div style="margin-left: 20px">
+    <div style="margin-left: 20px;flex-grow:1;overflow-y:auto;max-height: 95vh;">
       <h3>配置:</h3>
       <div style="cursor: pointer">
         <div @click="state.editable = !state.editable">
-          是否可编辑：{{ state.editable }}
+          是否可编辑： <el-switch :value="state.editable"></el-switch>
         </div>
         <div @click="state.zoomable = !state.zoomable">
-          是否可缩放：{{ state.zoomable }}
+          是否可缩放： <el-switch :value="state.zoomable"></el-switch>
         </div>
         <div @click="state.movable = !state.movable">
-          是否可拖拽查看：{{ state.movable }}
+          是否可拖拽查看： <el-switch :value="state.movable"></el-switch>
         </div>
         <div @click="state.showPointText = !state.showPointText">
-          是否可见节点文本：{{ state.showPointText }}
+          是否可见节点文本：<el-switch :value="state.showPointText"></el-switch>
         </div>
       </div>
 
@@ -31,8 +31,8 @@
           <pre>
  {{ elcPathTransformOptions }}
           </pre>
-          <button @click="saveTransformOptions">保存参数</button>
-          <button @click="loadTransformOptions">加载上次保存的参数</button>
+          <el-button type="primary" @click="saveTransformOptions">保存参数</el-button>
+          <el-button type="primary" @click="loadTransformOptions">加载上次保存的参数</el-button>
         </div>
         <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
         <!-- <button @click="selectBg">选中背景</button><br /> -->
@@ -57,15 +57,18 @@
         <input type="checkbox" checked disabled />
         选中物体进行编辑（移动、缩放、多选等，基于fabric.js默认支持）
         <br />
-        <input type="checkbox" disabled /> 数据导出导入<br />
-        <input type="checkbox" disabled /> 动态增减锚点<br />
         <input type="checkbox" checked disabled />
         支持调整路线锚点后（移动），路线追踪锚点重新渲染<br />
         <input type="checkbox" checked disabled />
         路线锚点保持原比例与尺寸，不随编辑放大缩小、旋转<br />
         <input type="checkbox" checked disabled />
         支持在锚点附近显示文本内容，支持控制显示与关闭<br />
-        <input type="checkbox" disabled /> 自定义右键面板功能<br />
+        <input type="checkbox" disabled /> 渲染小车以及朝向<br />
+        <input type="checkbox" disabled /> 性能问题查看<br />
+        <input type="checkbox" disabled checked /> 旋转缩放平移的数据导出<br />
+        <input type="checkbox" disabled /> 缩放地图保持点位与文字的视图尺寸<br />
+        <input type="checkbox" disabled /> 数据导出导入<br />
+        <input type="checkbox" disabled /> 动态增减锚点<br />
       </div>
     </div>
   </div>
@@ -194,6 +197,7 @@ export default {
   methods: {
     saveTransformOptions() {
       localStorage.setItem('elcPathTransformOptions', JSON.stringify(this.elcPathTransformOptions))
+      this.$message.success("保存成功")
     },
     loadTransformOptions() {
       const data = localStorage.getItem('elcPathTransformOptions')
