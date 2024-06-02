@@ -113,18 +113,18 @@ export class ElcPath extends BaseElcNode {
   }
 
   registerListener() {
-    this.onModifiedHandle = this.onModified.bind(this);
+    /* this.onModifiedHandle = this.onModified.bind(this);
     this.fGroup.on("modified", this.onModifiedHandle);
 
     this.fGroup.on("deselected", this.debouncedOnDeselect);
 
     this.onSelectHandle = this.select.bind(this);
-    this.fGroup.on("selected", this.onSelectHandle);
+    this.fGroup.on("selected", this.onSelectHandle); */
   }
   unRegisterListener() {
-    this.fGroup.off("modified", this.onModifiedHandle);
+    /* this.fGroup.off("modified", this.onModifiedHandle);
     this.fGroup.off("deselected", this.debouncedOnDeselect);
-    this.fGroup.off("selected", this.onSelectHandle);
+    this.fGroup.off("selected", this.onSelectHandle); */
   }
 
   onModified(e) { }
