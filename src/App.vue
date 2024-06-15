@@ -16,28 +16,29 @@
 
     <!-- 右边 -->
     <div style="margin-left: 20px; flex-grow: 1">
-      <h3>配置:</h3>
-      <div style="cursor: pointer">
-        <div @click="state.editable = !state.editable">
-          是否可编辑： <el-switch :value="state.editable"></el-switch>
-        </div>
-        <div @click="state.zoomable = !state.zoomable">
-          是否可缩放： <el-switch :value="state.zoomable"></el-switch>
-        </div>
-        <div @click="state.movable = !state.movable">
-          是否可拖拽查看： <el-switch :value="state.movable"></el-switch>
-        </div>
-        <div @click="state.showPointText = !state.showPointText">
-          是否可见节点文本：<el-switch :value="state.showPointText"></el-switch>
-        </div>
-      </div>
-
       <h3>功能：</h3>
-      <div>
-        <div>
+      <div style="display: flex; gap: 10px">
+        <el-card style="cursor: pointer">
+          <div @click="state.editable = !state.editable">
+            是否可编辑： <el-switch :value="state.editable"></el-switch>
+          </div>
+          <div @click="state.zoomable = !state.zoomable">
+            是否可缩放： <el-switch :value="state.zoomable"></el-switch>
+          </div>
+          <div @click="state.movable = !state.movable">
+            是否可拖拽查看： <el-switch :value="state.movable"></el-switch>
+          </div>
+          <div @click="state.showPointText = !state.showPointText">
+            是否可见节点文本：<el-switch
+              :value="state.showPointText"
+            ></el-switch>
+          </div>
+        </el-card>
+
+        <el-card>
           路线transform参数:<br />
           <pre>
- {{ elcPathTransformOptions }}
+            {{ elcPathTransformOptions }}
           </pre>
           <el-button type="primary" @click="saveTransformOptions"
             >保存参数</el-button
@@ -45,7 +46,17 @@
           <el-button type="primary" @click="loadTransformOptions"
             >加载上次保存的参数</el-button
           >
-        </div>
+        </el-card>
+
+        <el-card>
+          小车角度
+          <el-slider
+            v-model="carRotation"
+            :min="0"
+            :max="360"
+            @input="carRotationChange"
+          ></el-slider>
+        </el-card>
         <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
         <!-- <button @click="selectBg">选中背景</button><br /> -->
       </div>
@@ -53,10 +64,9 @@
       <div style="margin-top: 10px">
         <h3>操作说明:</h3>
         <div>
-          1. 点击上面【配置】中的文本切换状态<br />
-          2. 鼠标左键：【框选与编辑】<br />
+          1. 鼠标左键：【框选与编辑】<br />
           空格+鼠标左键：【拖拽画布查看】<br />
-          3. 滚轮：【缩放】<br />
+          2. 滚轮：【缩放】<br />
         </div>
       </div>
 
@@ -225,6 +235,7 @@ export default {
       elcPath: null,
       elcCanvas: null,
       elcPathTransformOptions: {},
+      carRotation: 0,
     };
   },
   methods: {
@@ -302,13 +313,17 @@ export default {
       this.car = this.elcCanvas.addImage({
         id: "car-1",
         src: "./public/images/car.png",
+        left: 100,
+        top: 100,
         scaleY: 0.2,
         scaleX: 0.2,
+        originX: "center",
+        originY: "center",
         lockRotation: true,
         lockScalingX: true,
         lockScalingY: true,
-        lockMovementX: true,
-        lockMovementY: true,
+        /* lockMovementX: true,
+        lockMovementY: true, */
         layer: constant.Layer.CAR,
       });
 
@@ -381,23 +396,21 @@ export default {
          console.info("没有this.elcPath");
        } */
     },
-    selectBg() {
-      /* if (this.elcPath) {
-        this.elcCanvas.clearSelection();
-
-        const nodes = [this.bg.fNode, this.location.fNode];
-
-        const canvas = this.elcCanvas.fCanvas;
-        canvas.setActiveObject(
-          new fabric.ActiveSelection(nodes, {
-            canvas: canvas,
-          })
-        );
-
+    setCarRotation() {
+      if (this.car) {
+        this.car.fNode.set({
+          angle: 45,
+        });
         this.elcCanvas.refresh();
-      } else {
-        console.info("没有this.elcPath");
-      } */
+      }
+    },
+    carRotationChange() {
+      if (this.car && this.car.fNode && this.car.fNode.set) {
+        this.car.fNode.set({
+          angle: this.carRotation,
+        });
+        this.elcCanvas.refresh();
+      }
     },
   },
   mounted() {},
