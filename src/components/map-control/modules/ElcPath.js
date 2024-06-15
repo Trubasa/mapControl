@@ -3,6 +3,7 @@ import { BaseElcNode } from "./BaseElcNode";
 import { ElcPathPoint } from "./ElcPathPoint";
 import { constant } from "../utils/constant";
 import { utils } from "../utils/utils";
+import { fabricUtils } from "./fabricUtils";
 
 export class ElcPath extends BaseElcNode {
   constructor(elcCanvas, options = {}) {
@@ -57,18 +58,26 @@ export class ElcPath extends BaseElcNode {
         });
         fNodes.push(this.fPath);
 
-        this.removefNodesFromCanvas(this.fCanvas, fNodes);
+        fabricUtils.removefNodesFromCanvas(this.fCanvas, fNodes);
+        if (this.options.showPathOnly) {
+          fNodes = [this.fPath];
+        }
+        // console.log("this.options.groupAttrs", this.options.groupAttrs);
+
+        if (this.options.groupAttrs) {
+          const groupRect = new fabric.Rect({
+            left: this.options.groupAttrs.left || 0,
+            top: this.options.groupAttrs.top || 0,
+            fill: "transparent", // 背景颜色设为透明
+            width: this.options.groupAttrs.width || 0, // 宽度为0
+            height: this.options.groupAttrs.height || 0, // 高度为0
+          });
+          fNodes.push(groupRect);
+        }
         this.fGroup = new fabric.Group(fNodes, {
-          // this.fGroup = new fabric.Group([], {
           ...this.options,
         });
       });
-  }
-
-  removefNodesFromCanvas(fCanvas, fNodes) {
-    fNodes.forEach((ele) => {
-      fCanvas.remove(ele);
-    });
   }
 
   createPoints() {

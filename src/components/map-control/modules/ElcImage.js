@@ -46,11 +46,11 @@ export class ElcImage extends BaseElcNode {
   }
 
   getAllFNodes() {
-    return [this.fNode]
+    return [this.fNode];
   }
 
   isFNodesReady() {
-    return this.getAllFNodes().every(ele => !!ele)
+    return this.getAllFNodes().every((ele) => !!ele);
   }
 
   loadImg() {
@@ -59,8 +59,8 @@ export class ElcImage extends BaseElcNode {
       .then((img) => {
         this.fNode = img;
         img.set({
-          ...this.options
-        },);
+          ...this.options,
+        });
         // this.fCanvas.add(img);
         this.registerListener();
         this.create();

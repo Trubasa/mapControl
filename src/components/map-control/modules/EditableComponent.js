@@ -14,8 +14,13 @@ export class EditableComponent extends BaseComponent {
     this._enable = value;
     if (!this.fCanvas) return;
     this.fCanvas.forEachObject((object) => {
+      /* console.log(
+        "editableComponent set enable",
+        object.id,
+        object.neverSelect ? false : this.enable
+      ); */
       object.set({
-        selectable: value,
+        selectable: object.neverSelect ? false : this.enable,
       });
     });
     // 取消所有对象的选中状态
@@ -57,7 +62,7 @@ export class EditableComponent extends BaseComponent {
   onAddObject(e) {
     const object = e.target;
     object.set({
-      selectable: this.enable,
+      selectable: object.neverSelect ? false : this.enable,
     });
   }
 }

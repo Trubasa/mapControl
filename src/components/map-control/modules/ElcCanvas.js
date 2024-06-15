@@ -11,6 +11,7 @@ import { LayerComponent } from "./LayerComponnet";
 import { constant } from "../utils/constant";
 import { ElcPath } from "./ElcPath";
 import { ElcGroup } from "./ElcGroup";
+import { ElcCar } from "./ElcCar";
 import { bus } from "../utils/bus";
 
 export class ElcCanvas {
@@ -33,7 +34,7 @@ export class ElcCanvas {
     }
   } */
   init(canvasDom) {
-    this.bus = bus
+    this.bus = bus;
     // this.initLayer();
     this.nodeMap = new Map();
     this.fCanvas = new fabric.Canvas(canvasDom, {
@@ -73,6 +74,11 @@ export class ElcCanvas {
     this.nodeMap.set(node.id, node);
     return node;
   }
+  addCar(options) {
+    const node = new ElcCar(this, options);
+    this.nodeMap.set(node.id, node);
+    return node;
+  }
   addPath(options) {
     const path = new ElcPath(this, options);
     this.nodeMap.set(path.id, path);
@@ -80,7 +86,7 @@ export class ElcCanvas {
   }
   addGroup(options) {
     const group = new ElcGroup(this, options);
-    this.nodeMap.set(group.id, group)
+    this.nodeMap.set(group.id, group);
     return group;
   }
 

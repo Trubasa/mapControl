@@ -54,7 +54,7 @@
             v-model="carRotation"
             :min="0"
             :max="360"
-            @input="carRotationChange"
+            @input="updateCarRotation"
           ></el-slider>
         </el-card>
         <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
@@ -114,6 +114,26 @@ export default {
         movable: true,
         showPointText: true,
       },
+      pathDone: [
+        {
+          id: 1,
+          x: 100,
+          y: 100,
+          text: "Point 1",
+        },
+        {
+          id: 2,
+          x: 150,
+          y: 180,
+          text: "Point 2",
+        },
+        {
+          id: 3,
+          x: 200,
+          y: 200,
+          text: "Point 3",
+        },
+      ],
       path: [
         {
           id: 1,
@@ -132,6 +152,18 @@ export default {
           x: 200,
           y: 200,
           text: "Point 3",
+        },
+        {
+          id: 4,
+          x: 250,
+          y: 160,
+          text: "Point 4",
+        },
+        {
+          id: 5,
+          x: 300,
+          y: 100,
+          text: "Point 5",
         },
       ],
       /*  path: [
@@ -235,7 +267,7 @@ export default {
       elcPath: null,
       elcCanvas: null,
       elcPathTransformOptions: {},
-      carRotation: 0,
+      carRotation: 90, // 车子的旋转的角度
     };
   },
   methods: {
@@ -253,11 +285,17 @@ export default {
         this.elcPathTransformOptions = options;
         this.elcPath.fNode.set(this.elcPathTransformOptions);
         this.elcPath.keepPathPointRotation();
+
+        // 应用变化到已经走过的路线
+        this.elcPathDone.fNode.set(this.elcPathTransformOptions);
+
+        // 应用变化到车辆
+        this.car.fNode.set(this.elcPathTransformOptions);
       }
     },
     objectModifiedHandle(e) {
       // console.log(e)
-      if (e.target.id == "my-path-1") {
+      if (e.target.id == "my-path-whole") {
         const fNodeOptions = fabricUtils.getOptionsFromFNode(e.target);
         console.log("fNodeOptions", fNodeOptions);
         this.elcPathTransformOptions = fNodeOptions;
@@ -292,47 +330,15 @@ export default {
         scaleX: 1,
         layer: constant.Layer.BACK,
       });
-      /* this.location = this.elcCanvas.addImage({
-        src: "./public/images/location.png",
-        scaleY: 1,
-        scaleX: 1,
-        layer: constant.Layer.DEFAULT,
-      }); */
-      // 添加各个定位点
-      /* this.path.forEach((item) => {
-        this.elcCanvas.addImage({
-          id: item.id,
-          src: "./public/images/location.png",
-          left: item.x,
-          top: item.y,
-          scaleY: 0.4,
-          scaleX: 0.4,
-        });
-      }); */
-      // 添加车辆，锁定无法进行缩放和旋转
-      this.car = this.elcCanvas.addImage({
-        id: "car-1",
-        src: "./public/images/car.png",
-        left: 100,
-        top: 100,
-        scaleY: 0.2,
-        scaleX: 0.2,
-        originX: "center",
-        originY: "center",
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        /* lockMovementX: true,
-        lockMovementY: true, */
-        layer: constant.Layer.CAR,
-      });
 
       // 添加路径
       this.elcPath = this.elcCanvas.addPath({
-        id: "my-path-1",
+        id: "my-path-whole",
         points: this.path,
         pathPointImgScaleNum: 0.4,
       });
+
+      let groupAttrs = null; // 完整路线的外包裹group的参数
       utils
         .waitForCondition(() => {
           return this.elcPath.isFNodesReady();
@@ -343,37 +349,43 @@ export default {
           );
           console.log("fNodeOptions", fNodeOptions);
           this.elcPathTransformOptions = fNodeOptions;
-        });
-
-      /* this.elcGroup = this.elcCanvas.addGroup({
-        id: 'group-1',
-      })
- 
-      utils.waitForCondition(() => {
-        return this.elcPath.getAllFNodes().length > 0
-      }, '等待elcPath超时').then(() => {
-        this.elcGroup.addElcNode(this.elcPath)
-        this.elcGroup.fNode.set({
-          scaleX: 1
+          groupAttrs = fNodeOptions;
         })
-      }) */
-
-      // 创建一条线段
-      /* var line = new fabric.Line([50, 100, 200, 100], {
-        stroke: "red", // 线条颜色
-        strokeWidth: 2, // 线条宽度
-        selectable: false, // 设置线段不可选中（可选）
-      });
-      this.elcCanvas.fCanvas.add(line); */
-
-      // 创建一条path
-      /* var path = new fabric.Path("M 0 0 L 200 100 L 170 200");
-      // path.set({ left: 120, top: 120 });
-      canvas.add(path); */
-
-      // 将线段添加到画布上
-      // this.elcCanvas.fCanvas.add(line);
-      // 变量赋值给window，方便调试
+        .then(() => {
+          // 再绘制一条路线，表示走过的距离
+          this.elcPathDone = this.elcCanvas.addPath({
+            id: "my-path-done",
+            points: this.pathDone,
+            pathPointImgScaleNum: 0.4,
+            stroke: "green",
+            showPathOnly: true, // 只渲染路线，不渲染锚点与描述
+            groupAttrs,
+            neverSelect: true,
+          });
+        })
+        .then(() => {
+          // 添加车辆，锁定无法进行缩放和旋转
+          const carPoint = this.path[2];
+          this.car = this.elcCanvas.addCar({
+            id: "car-1",
+            src: "./public/images/car.png",
+            left: carPoint.x,
+            top: carPoint.y,
+            scaleY: 0.2,
+            scaleX: 0.2,
+            layer: constant.Layer.CAR,
+            groupAttrs,
+            neverSelect: true,
+          });
+          utils
+            .waitForCondition(() => {
+              return this.car.isFNodesReady();
+            }, "等待car超时")
+            .then(() => {
+              // console.log("this.car", this.car.getAllFNodes());
+              this.updateCarRotation();
+            });
+        });
 
       // #region [debug]
       window.$elcCanvas = this.elcCanvas;
@@ -396,19 +408,9 @@ export default {
          console.info("没有this.elcPath");
        } */
     },
-    setCarRotation() {
-      if (this.car) {
-        this.car.fNode.set({
-          angle: 45,
-        });
-        this.elcCanvas.refresh();
-      }
-    },
-    carRotationChange() {
+    updateCarRotation() {
       if (this.car && this.car.fNode && this.car.fNode.set) {
-        this.car.fNode.set({
-          angle: this.carRotation,
-        });
+        this.car.updateCarRotation(this.carRotation);
         this.elcCanvas.refresh();
       }
     },
