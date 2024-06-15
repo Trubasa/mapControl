@@ -49,6 +49,7 @@ export class ElcCar extends BaseElcNode {
       lockScalingX: true,
       lockScalingY: true,
       ...this.options,
+      keepElementViewSize: true,
     });
   }
 

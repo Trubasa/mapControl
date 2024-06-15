@@ -24,5 +24,6 @@ export const constant = {
   EVENT_LIST: {
     POINT_LABEL_VISIBLE: "POINT_LABEL_VISIBLE",
     OBJECT_MODIFIED: "OBJECT_MODIFIED", // fabricjs对象编辑结束
+    ZOOM_FINISH: "ZOOM_FINISH", // 缩放结束
   },
 };

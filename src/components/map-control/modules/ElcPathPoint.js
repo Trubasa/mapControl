@@ -92,6 +92,7 @@ export class ElcPathPoint extends BaseElcNode {
           lockScalingX: true,
           lockScalingY: true,
           lockRotation: true,
+          keepElementViewSize: true,
           ...this.options,
         },
         this.extra
@@ -145,6 +146,7 @@ export class ElcPathPoint extends BaseElcNode {
         src: "./public/images/location.png",
         scaleY: this.pathPointImgScaleNum,
         scaleX: this.pathPointImgScaleNum,
+        keepElementViewSize: true,
         ...this.options,
       },
       this.extra

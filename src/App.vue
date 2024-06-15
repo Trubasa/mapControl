@@ -85,9 +85,12 @@
         路线锚点保持原比例与尺寸，不随编辑放大缩小、旋转<br />
         <input type="checkbox" checked disabled />
         支持在锚点附近显示文本内容，支持控制显示与关闭<br />
-        <input type="checkbox" disabled /> 渲染小车以及朝向<br />
-        <input type="checkbox" disabled /> 性能问题查看<br />
+        <input type="checkbox" disabled checked /> 渲染小车以及朝向<br />
         <input type="checkbox" disabled checked /> 旋转缩放平移的数据导出<br />
+        <input type="checkbox" disabled checked /> 支持绘制已走过的路线<br />
+        <input type="checkbox" disabled checked />
+        支持位置锚点、文本、车子跟随视图缩放或者编辑反向调整大小，保持视觉大小不变化<br />
+        <input type="checkbox" disabled /> 性能问题查看<br />
         <input type="checkbox" disabled />
         缩放地图保持点位与文字的视图尺寸<br />
         <input type="checkbox" disabled /> 数据导出导入<br />
@@ -166,7 +169,7 @@ export default {
           text: "Point 5",
         },
       ],
-      /*  path: [
+      path: [
         {
           id: 1,
           x: 100,
@@ -263,7 +266,7 @@ export default {
           y: 300,
           text: "Point 16",
         },
-      ], */
+      ],
       elcPath: null,
       elcCanvas: null,
       elcPathTransformOptions: {},
@@ -360,7 +363,7 @@ export default {
             stroke: "green",
             showPathOnly: true, // 只渲染路线，不渲染锚点与描述
             groupAttrs,
-            neverSelect: true,
+            // neverSelect: true,
           });
         })
         .then(() => {
@@ -375,7 +378,7 @@ export default {
             scaleX: 0.2,
             layer: constant.Layer.CAR,
             groupAttrs,
-            neverSelect: true,
+            // neverSelect: true,
           });
           utils
             .waitForCondition(() => {

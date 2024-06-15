@@ -7,6 +7,7 @@ import { KeyboardEventsComponent } from "./KeyboardEventsComponent";
 import { ObjectModifiedComponent } from "./ObjectModifiedComponent";
 import { SelectionComponent } from "./SelectionCopmonent";
 import { PointLabelVisableComponent } from "./PointLabelVisableComponent";
+import { KeepElementViewSizeComponent } from "./KeepElementViewSizeComponent";
 import { LayerComponent } from "./LayerComponnet";
 import { constant } from "../utils/constant";
 import { ElcPath } from "./ElcPath";
@@ -52,6 +53,7 @@ export class ElcCanvas {
     this.selectionComponent = new SelectionComponent(this);
     this.keyboardEventsComponent = new KeyboardEventsComponent(this);
     this.pointLabelVisableComponent = new PointLabelVisableComponent(this);
+    this.keepElementViewSizeComponent = new KeepElementViewSizeComponent(this);
   }
   destroy() {
     this.layerComponent.destroy();
@@ -62,6 +64,7 @@ export class ElcCanvas {
     this.objectModifiedComponent.destroy();
     this.selectionComponent.destroy();
     this.pointLabelVisableComponent.destroy();
+    this.keepElementViewSizeComponent.destroy();
     this.destroyNodeHandle();
     this.fCanvas.dispose();
   }

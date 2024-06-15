@@ -1,3 +1,5 @@
+import { bus } from "../utils/bus";
+import { constant } from "../utils/constant";
 import { BaseComponent } from "./BaseComponent";
 
 export class MouseZoomComponent extends BaseComponent {
@@ -21,6 +23,7 @@ export class MouseZoomComponent extends BaseComponent {
     const mousePos = new fabric.Point(pointer.x, pointer.y);
 
     this.fCanvas.zoomToPoint(mousePos, zoom);
+    bus.$emit(constant.EVENT_LIST.ZOOM_FINISH);
 
     event.preventDefault();
     event.stopPropagation();
