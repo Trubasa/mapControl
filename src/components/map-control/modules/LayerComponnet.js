@@ -25,14 +25,26 @@ export class LayerComponent extends BaseComponent {
   addToLayer(layerName, object) {
     // console.log("addToLayer", layerName, object.id);
     if (!layerName) {
-      layerName = constant.Layer.DEFAULT
+      layerName = constant.Layer.DEFAULT;
     }
 
     this.layerDict[layerName].push(object);
     this.fCanvas.add(object);
     object.moveTo(constant.LAYER_VALUE[layerName]);
-    /* console.log("layerName", layerName)
-    console.log("constant.LAYER_VALUE[layerName]", constant.LAYER_VALUE[layerName]) */
+    console.log("object moveTo", constant.LAYER_VALUE[layerName], object.id);
+    this.reSortObjects();
+  }
+
+  reSortObjects() {
+    // fabric 没有图层控制，只能通过数据中前后关系进行位置设置，所以这里添加了新元素后，应该重排一下
+    const originObjects = this.fCanvas.getObjects();
+    originObjects.sort((a, b) => {
+      return constant.LAYER_VALUE[a.layer] - constant.LAYER_VALUE[b.layer];
+    });
+    // console.log("resortObjects", originObjects);
+    originObjects.forEach((object, index) => {
+      object.moveTo(99999999999); // 每次添加一个极大值，保证每次设置都添加数组最后
+    });
   }
 
   // 从指定层级移除对象

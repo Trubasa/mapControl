@@ -50,17 +50,18 @@ export class ElcPathPoint extends BaseElcNode {
     if (this.elcCanvas.pointLabelVisableComponent) {
       isShow = this.elcCanvas.pointLabelVisableComponent.enable;
     }
-    utils.waitForCondition(() => {
-      return this.elcText && this.elcText.isFNodesReady();
-    }).then(() => {
-      if (isShow) {
-        this.elcText.changeOpacity(1)
-      } else {
-        this.elcText.changeOpacity(0)
-      }
-      this.elcCanvas.refresh();
-    })
-
+    utils
+      .waitForCondition(() => {
+        return this.elcText && this.elcText.isFNodesReady();
+      })
+      .then(() => {
+        if (isShow) {
+          this.elcText.changeOpacity(1);
+        } else {
+          this.elcText.changeOpacity(0);
+        }
+        this.elcCanvas.refresh();
+      });
   }
 
   destroy() {
@@ -110,7 +111,7 @@ export class ElcPathPoint extends BaseElcNode {
   }
 
   isFNodesReady() {
-    return this.getAllFNodes().every(ele => !!ele)
+    return this.getAllFNodes().every((ele) => !!ele);
   }
 
   keepRotation(angle) {

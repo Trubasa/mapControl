@@ -30,34 +30,45 @@ export class ElcPath extends BaseElcNode {
 
     this.createGroup();
 
-    utils.waitForCondition(() => {
-      return !!this.fGroup
-    }, '等待fGroup就绪超时').then(() => {
-      this.fNode = this.fGroup
-      this.create()
-    })
+    utils
+      .waitForCondition(() => {
+        return !!this.fGroup;
+      }, "等待fGroup就绪超时")
+      .then(() => {
+        this.fNode = this.fGroup;
+        this.create();
+      });
   }
 
   /** 将该组件涉及的所有fabric object 合并成一个group 方便编辑 */
   createGroup() {
-    utils.waitForCondition(() => {
-      // 所有的fabric节点是否都加载完毕了，因为有一些是异步加载的图片啥的，没法在初始创建的时候立即就绪
-      const flag = this.elcPathPointMap.values().every((elcPathPoint) => {
-        return elcPathPoint.isFNodesReady()  // 获取这个elc实例相关的fabric对象
-      })
-      return flag
-    }, '等待节点就绪超时').then(() => {
-      let fNodes = []
-      this.elcPathPointMap.values().forEach((elcPathPoint) => {
-        fNodes = fNodes.concat(elcPathPoint.getAllFNodes())
-      })
-      fNodes.push(this.fPath)
+    utils
+      .waitForCondition(() => {
+        // 所有的fabric节点是否都加载完毕了，因为有一些是异步加载的图片啥的，没法在初始创建的时候立即就绪
+        const flag = this.elcPathPointMap.values().every((elcPathPoint) => {
+          return elcPathPoint.isFNodesReady(); // 获取这个elc实例相关的fabric对象
+        });
+        return flag;
+      }, "等待节点就绪超时")
+      .then(() => {
+        let fNodes = [];
+        this.elcPathPointMap.values().forEach((elcPathPoint) => {
+          fNodes = fNodes.concat(elcPathPoint.getAllFNodes());
+        });
+        fNodes.push(this.fPath);
 
-      this.fGroup = new fabric.Group(fNodes, {
-        ...this.options
-      })
+        this.removefNodesFromCanvas(this.fCanvas, fNodes);
+        this.fGroup = new fabric.Group(fNodes, {
+          // this.fGroup = new fabric.Group([], {
+          ...this.options,
+        });
+      });
+  }
 
-    })
+  removefNodesFromCanvas(fCanvas, fNodes) {
+    fNodes.forEach((ele) => {
+      fCanvas.remove(ele);
+    });
   }
 
   createPoints() {
@@ -107,25 +118,24 @@ export class ElcPath extends BaseElcNode {
       strokeWidth: this.options.strokeWidth || 2, // 默认描边宽度为1，除非已指定
       ...this.options,
     });
-
   }
 
   keepPathPointRotation() {
     const angle = this.fGroup.angle;
 
     this.elcPathPointMap.values().forEach((elcPathPoint) => {
-      elcPathPoint.keepRotation(angle)
-    })
+      elcPathPoint.keepRotation(angle);
+    });
 
-    this.elcCanvas.refresh()
+    this.elcCanvas.refresh();
   }
 
   getAllFNodes() {
-    return [this.fGroup]
+    return [this.fGroup];
   }
 
   isFNodesReady() {
-    return this.getAllFNodes().every(ele => !!ele)
+    return this.getAllFNodes().every((ele) => !!ele);
   }
 
   clearPath() {
@@ -178,6 +188,6 @@ export class ElcPath extends BaseElcNode {
   destroy() {
     this.clearPath();
     this.elcPathPointMap.forEach((ele) => ele.destroy());
-    this.clearGroup()
+    this.clearGroup();
   }
 }

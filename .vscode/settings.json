@@ -1,4 +1,19 @@
 {
     "files.autoSave": "onFocusChange",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "coloredRegions.colorRange": [
+        
+        
+        "#65a30d12",
+        "#0891b212",
+        "#db277712",
+        "#ca8a0412",
+        "#dc262612",
+        "#7c3aed12"
+    ],
+    "coloredRegions.namedColors": {
+
+        "imports": "#2563eb12",
+        "main": "#e11d4812"
+    }
 }

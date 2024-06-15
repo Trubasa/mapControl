@@ -3,6 +3,7 @@ const LAYER = {
   PATH: "path",
   DEFAULT: "default",
   FRONT: "front",
+  CAR: "car",
 };
 
 export const constant = {
@@ -17,10 +18,11 @@ export const constant = {
     [LAYER.BACK]: 0,
     [LAYER.PATH]: 100,
     [LAYER.DEFAULT]: 200,
+    [LAYER.CAR]: 300,
     [LAYER.FRONT]: 1000,
   },
   EVENT_LIST: {
     POINT_LABEL_VISIBLE: "POINT_LABEL_VISIBLE",
-    OBJECT_MODIFIED: 'OBJECT_MODIFIED'  // fabricjs对象编辑结束
+    OBJECT_MODIFIED: "OBJECT_MODIFIED", // fabricjs对象编辑结束
   },
 };

@@ -2,12 +2,20 @@
   <div id="app" style="display: flex; flex-wrap: wrap">
     <!-- 左边 -->
     <div>
-      <map-control ref="mapControlRef" :width="800" :height="600" :editable="state.editable" :zoomable="state.zoomable"
-        :movable="state.movable" :isShowPointText="state.showPointText" @ready="readyHandle"></map-control>
+      <map-control
+        ref="mapControlRef"
+        :width="800"
+        :height="600"
+        :editable="state.editable"
+        :zoomable="state.zoomable"
+        :movable="state.movable"
+        :isShowPointText="state.showPointText"
+        @ready="readyHandle"
+      ></map-control>
     </div>
 
     <!-- 右边 -->
-    <div style="margin-left: 20px;flex-grow:1;overflow-y:auto;max-height: 95vh;">
+    <div style="margin-left: 20px; flex-grow: 1">
       <h3>配置:</h3>
       <div style="cursor: pointer">
         <div @click="state.editable = !state.editable">
@@ -27,12 +35,16 @@
       <h3>功能：</h3>
       <div>
         <div>
-          路线transform参数:<br>
+          路线transform参数:<br />
           <pre>
  {{ elcPathTransformOptions }}
           </pre>
-          <el-button type="primary" @click="saveTransformOptions">保存参数</el-button>
-          <el-button type="primary" @click="loadTransformOptions">加载上次保存的参数</el-button>
+          <el-button type="primary" @click="saveTransformOptions"
+            >保存参数</el-button
+          >
+          <el-button type="primary" @click="loadTransformOptions"
+            >加载上次保存的参数</el-button
+          >
         </div>
         <!-- <button @click="selectAllLoactionNode">选中路线以及线上的点</button> -->
         <!-- <button @click="selectBg">选中背景</button><br /> -->
@@ -66,7 +78,8 @@
         <input type="checkbox" disabled /> 渲染小车以及朝向<br />
         <input type="checkbox" disabled /> 性能问题查看<br />
         <input type="checkbox" disabled checked /> 旋转缩放平移的数据导出<br />
-        <input type="checkbox" disabled /> 缩放地图保持点位与文字的视图尺寸<br />
+        <input type="checkbox" disabled />
+        缩放地图保持点位与文字的视图尺寸<br />
         <input type="checkbox" disabled /> 数据导出导入<br />
         <input type="checkbox" disabled /> 动态增减锚点<br />
       </div>
@@ -92,6 +105,26 @@ export default {
         showPointText: true,
       },
       path: [
+        {
+          id: 1,
+          x: 100,
+          y: 100,
+          text: "Point 1",
+        },
+        {
+          id: 2,
+          x: 150,
+          y: 180,
+          text: "Point 2",
+        },
+        {
+          id: 3,
+          x: 200,
+          y: 200,
+          text: "Point 3",
+        },
+      ],
+      /*  path: [
         {
           id: 1,
           x: 100,
@@ -188,49 +221,58 @@ export default {
           y: 300,
           text: "Point 16",
         },
-      ],
+      ], */
       elcPath: null,
       elcCanvas: null,
-      elcPathTransformOptions: {}
+      elcPathTransformOptions: {},
     };
   },
   methods: {
     saveTransformOptions() {
-      localStorage.setItem('elcPathTransformOptions', JSON.stringify(this.elcPathTransformOptions))
-      this.$message.success("保存成功")
+      localStorage.setItem(
+        "elcPathTransformOptions",
+        JSON.stringify(this.elcPathTransformOptions)
+      );
+      this.$message.success("保存成功");
     },
     loadTransformOptions() {
-      const data = localStorage.getItem('elcPathTransformOptions')
+      const data = localStorage.getItem("elcPathTransformOptions");
       if (data) {
-        const options = JSON.parse(data)
-        this.elcPathTransformOptions = options
-        this.elcPath.fNode.set(this.elcPathTransformOptions)
-        this.elcPath.keepPathPointRotation()
+        const options = JSON.parse(data);
+        this.elcPathTransformOptions = options;
+        this.elcPath.fNode.set(this.elcPathTransformOptions);
+        this.elcPath.keepPathPointRotation();
       }
     },
     objectModifiedHandle(e) {
       // console.log(e)
-      if (e.target.id == 'my-path-1') {
-        const fNodeOptions = fabricUtils.getOptionsFromFNode(e.target)
-        console.log("fNodeOptions", fNodeOptions)
-        this.elcPathTransformOptions = fNodeOptions
+      if (e.target.id == "my-path-1") {
+        const fNodeOptions = fabricUtils.getOptionsFromFNode(e.target);
+        console.log("fNodeOptions", fNodeOptions);
+        this.elcPathTransformOptions = fNodeOptions;
 
         /* fabricUtils.rotateGroupKeepElementsFixed(e.target, e.target.angle, e.target.scaleX, e.target.scaleY)
         this.elcCanvas.refresh() */
       }
     },
     registerBusEvent() {
-      this.elcCanvas.bus.$on(constant.EVENT_LIST.OBJECT_MODIFIED, this.objectModifiedHandle)
+      this.elcCanvas.bus.$on(
+        constant.EVENT_LIST.OBJECT_MODIFIED,
+        this.objectModifiedHandle
+      );
     },
     unRegisterBusEvent() {
-      this.elcCanvas.bus.$off(constant.EVENT_LIST.OBJECT_MODIFIED, this.objectModifiedHandle)
+      this.elcCanvas.bus.$off(
+        constant.EVENT_LIST.OBJECT_MODIFIED,
+        this.objectModifiedHandle
+      );
     },
     readyHandle(elcCanvas) {
       console.log("readyHandle");
       // this.elcCanvas = this.$refs.mapControlRef.elcCanvas;
       this.elcCanvas = elcCanvas;
 
-      this.registerBusEvent()
+      this.registerBusEvent();
       const canvas = this.elcCanvas.fCanvas;
       // 添加背景图片
       this.bg = this.elcCanvas.addImage({
@@ -256,21 +298,37 @@ export default {
           scaleX: 0.4,
         });
       }); */
+      // 添加车辆，锁定无法进行缩放和旋转
+      this.car = this.elcCanvas.addImage({
+        id: "car-1",
+        src: "./public/images/car.png",
+        scaleY: 0.2,
+        scaleX: 0.2,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        lockMovementX: true,
+        lockMovementY: true,
+        layer: constant.Layer.CAR,
+      });
 
       // 添加路径
       this.elcPath = this.elcCanvas.addPath({
-        id: 'my-path-1',
+        id: "my-path-1",
         points: this.path,
         pathPointImgScaleNum: 0.4,
       });
-      utils.waitForCondition(() => {
-        return this.elcPath.isFNodesReady()
-      }, '等待elcPath超时').then(() => {
-        const fNodeOptions = fabricUtils.getOptionsFromFNode(this.elcPath.fNode)
-        console.log("fNodeOptions", fNodeOptions)
-        this.elcPathTransformOptions = fNodeOptions
-      })
-
+      utils
+        .waitForCondition(() => {
+          return this.elcPath.isFNodesReady();
+        }, "等待elcPath超时")
+        .then(() => {
+          const fNodeOptions = fabricUtils.getOptionsFromFNode(
+            this.elcPath.fNode
+          );
+          console.log("fNodeOptions", fNodeOptions);
+          this.elcPathTransformOptions = fNodeOptions;
+        });
 
       /* this.elcGroup = this.elcCanvas.addGroup({
         id: 'group-1',
@@ -301,7 +359,18 @@ export default {
       // 将线段添加到画布上
       // this.elcCanvas.fCanvas.add(line);
       // 变量赋值给window，方便调试
+
+      // #region [debug]
       window.$elcCanvas = this.elcCanvas;
+      window.$getObjects = this.elcCanvas.fCanvas.getObjects.bind(
+        this.elcCanvas.fCanvas
+      );
+      window.$allLayers = () => {
+        this.elcCanvas.fCanvas.getObjects().forEach((item) => {
+          console.log(item.id, item.layer);
+        });
+      };
+      // #endRegion
     },
     selectAllLoactionNode() {
       /*  if (this.elcPath) {
@@ -330,13 +399,10 @@ export default {
         console.info("没有this.elcPath");
       } */
     },
-
   },
-  mounted() {
-
-  },
+  mounted() {},
   beforeDestroy() {
-    this.unRegisterBusEvent()
+    this.unRegisterBusEvent();
   },
 };
 </script>
@@ -354,7 +420,7 @@ export default {
   }
 
   /* 右边部分（现在是下方）的样式调整 */
-  #app>div {
+  #app > div {
     margin-left: 0;
     margin-top: 20px;
   }
