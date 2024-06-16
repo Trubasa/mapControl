@@ -168,7 +168,7 @@ export default {
       elcPath: null,
       elcCanvas: null,
       elcPathTransformOptions: {},
-      carRotation: 90, // 车子的旋转的角度
+      carRotation: 0, // 车子的旋转的角度
     };
   },
   methods: {
@@ -410,6 +410,12 @@ export default {
       // Update the car's position
       this.elcPathDone.updatePath();
       this.car.updatePosition(newX, newY);
+      const point1 = this.pathDone[this.pathDone.length - 2];
+      const point2 = this.path[this.pathDone.length - 1];
+      console.log("point1,point2", point1, point2);
+      const angle = fabricUtils.calculateAngle(point1, point2);
+      console.log("angle", angle);
+      this.car.updateCarRotation(angle);
     },
 
     // #endregion

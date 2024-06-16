@@ -145,7 +145,7 @@ export class ElcPath extends BaseElcNode {
 
   updatePath() {
     const pathString = this.getPathString();
-    console.log("updatePath", pathString);
+    // console.log("updatePath", pathString);
     this.fPath.path = this.getPathArray();
     /* this.fPath.set({
         path: this.fPath.path.push([
