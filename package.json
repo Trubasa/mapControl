@@ -1,7 +1,7 @@
 {
   "name": "map-control",
   "description": "fabric封装，进行图片控制于与标记",
-  "version": "0.0.6",
+  "version": "0.0.10",
   "author": "trubasa <1141521502@qq.com>",
   "license": "MIT",
   "private": false,
