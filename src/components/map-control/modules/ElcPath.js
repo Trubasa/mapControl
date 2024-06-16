@@ -46,14 +46,16 @@ export class ElcPath extends BaseElcNode {
     utils
       .waitForCondition(() => {
         // 所有的fabric节点是否都加载完毕了，因为有一些是异步加载的图片啥的，没法在初始创建的时候立即就绪
-        const flag = this.elcPathPointMap.values().every((elcPathPoint) => {
-          return elcPathPoint.isFNodesReady(); // 获取这个elc实例相关的fabric对象
-        });
+        const flag = Array.from(this.elcPathPointMap).every(
+          ([index, elcPathPoint]) => {
+            return elcPathPoint.isFNodesReady(); // 获取这个elc实例相关的fabric对象
+          }
+        );
         return flag;
       }, "等待节点就绪超时")
       .then(() => {
         let fNodes = [];
-        this.elcPathPointMap.values().forEach((elcPathPoint) => {
+        this.elcPathPointMap.forEach((elcPathPoint) => {
           fNodes = fNodes.concat(elcPathPoint.getAllFNodes());
         });
         fNodes.push(this.fPath);
@@ -161,7 +163,7 @@ export class ElcPath extends BaseElcNode {
   keepPathPointRotation() {
     const angle = this.fGroup.angle;
 
-    this.elcPathPointMap.values().forEach((elcPathPoint) => {
+    this.elcPathPointMap.forEach((elcPathPoint) => {
       elcPathPoint.keepRotation(angle);
     });
 
