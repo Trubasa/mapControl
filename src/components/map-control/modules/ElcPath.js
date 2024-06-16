@@ -96,17 +96,12 @@ export class ElcPath extends BaseElcNode {
     });
   }
 
-  createPath() {
+  //#region [logic] path 相关方法
+  getPathString() {
     const pathPoints = this.points.map((point) => {
       const position = point;
       return [position.x, position.y];
     });
-    /*  const pathPoints = Array.from(this.elcPathPointMap.values()).map(
-       (elcPathPoint) => {
-         const position = elcPathPoint.elcImage.getPosition();
-         return [position.x, position.y];
-       }
-     ); */
 
     let pathString = "M ";
     pathPoints.forEach((point, index) => {
@@ -115,6 +110,25 @@ export class ElcPath extends BaseElcNode {
       }
       pathString += `${point[0]} ${point[1]}`;
     });
+    return pathString;
+    /* const pathPoints = this.points.map((point) => {
+      const position = point;
+      return fabric.Point(position.x, position.y);
+    });
+
+    return pathPoints; */
+  }
+  getPathArray() {
+    const pathPoints = this.points.map((point, index) => {
+      const position = point;
+      return [index == 0 ? "M" : "L", position.x, position.y];
+    });
+
+    return pathPoints;
+  }
+
+  createPath() {
+    const pathString = this.getPathString();
     this.fPath = new fabric.Path(pathString, {
       lockMovementX: true,
       lockMovementY: true,
@@ -128,6 +142,21 @@ export class ElcPath extends BaseElcNode {
       ...this.options,
     });
   }
+
+  updatePath() {
+    const pathString = this.getPathString();
+    console.log("updatePath", pathString);
+    this.fPath.path = this.getPathArray();
+    /* this.fPath.set({
+        path: this.fPath.path.push([
+          "L",
+          Math.random() * 100,
+          Math.random() * 100,
+        ]),
+      }); */
+    this.elcCanvas.delayRefresh();
+  }
+  // #endregion
 
   keepPathPointRotation() {
     const angle = this.fGroup.angle;
@@ -164,7 +193,7 @@ export class ElcPath extends BaseElcNode {
   }
 
   updateAndRerender() {
-    this.updatePosition();
+    // this.updatePosition();
     this.destroy();
     this.init(this.elcCanvas, this.options);
   }

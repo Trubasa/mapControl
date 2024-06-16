@@ -31,7 +31,7 @@ export class LayerComponent extends BaseComponent {
     this.layerDict[layerName].push(object);
     this.fCanvas.add(object);
     object.moveTo(constant.LAYER_VALUE[layerName]);
-    console.log("object moveTo", constant.LAYER_VALUE[layerName], object.id);
+    // console.log("object moveTo", constant.LAYER_VALUE[layerName], object.id);
     this.reSortObjects();
   }
 

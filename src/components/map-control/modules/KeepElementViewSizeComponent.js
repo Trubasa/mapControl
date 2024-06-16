@@ -25,7 +25,7 @@ export class KeepElementViewSizeComponent extends BaseComponent {
 
   onViewportChange() {
     const zoom = this.fCanvas.getZoom();
-    console.log("zoom", zoom);
+    // console.log("zoom", zoom);
     this.fCanvas.forEachObject((object) => {
       this.adjustObjectSize(object, zoom);
       if (object.type === "group") {
@@ -60,7 +60,7 @@ export class KeepElementViewSizeComponent extends BaseComponent {
         scaleY /= parent.scaleY;
       }
 
-      console.log("scaleX", scaleX, "scaleY", scaleY);
+      // console.log("scaleX", scaleX, "scaleY", scaleY);
       object.set({
         scaleX: scaleX,
         scaleY: scaleY,

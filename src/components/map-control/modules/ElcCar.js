@@ -36,7 +36,7 @@ export class ElcCar extends BaseElcNode {
       }, "等待fGroup就绪超时")
       .then(() => {
         this.fNode = this.fGroup;
-        console.log("this.fNode", this.fNode);
+        // console.log("this.fNode", this.fNode);
         this.create();
       });
   }
@@ -62,7 +62,7 @@ export class ElcCar extends BaseElcNode {
       }, "等待carImage就绪超时")
       .then(() => {
         let fNodes = [...this.elcImage.getAllFNodes()];
-        console.log("fNodes", fNodes);
+        // console.log("fNodes", fNodes);
 
         fabricUtils.removefNodesFromCanvas(this.fCanvas, fNodes);
         // 如果传入了 groupAttrs，则使用这些属性创建组
@@ -84,7 +84,27 @@ export class ElcCar extends BaseElcNode {
         });
       });
   }
+  updatePosition(x, y) {
+    /* const { left: offsetLeft, top: offsetTop, scaleX, scaleY } = this.fNode;
+    this.elcImage.fNode.set({
+      left: x - offsetLeft * scaleX,
+      top: y - offsetTop * scaleY,
+    }); */
+    var invertedMatrix = fabric.util.invertTransform(
+      this.fNode.calcTransformMatrix()
+    );
 
+    var transformedPoint = fabric.util.transformPoint(
+      new fabric.Point(x, y),
+      invertedMatrix
+    );
+
+    // 更新点的位置
+    this.elcImage.fNode.set({
+      left: transformedPoint.x,
+      top: transformedPoint.y,
+    });
+  }
   updateCarRotation(angle) {
     this.elcImage.fNode.set({
       angle: -angle,

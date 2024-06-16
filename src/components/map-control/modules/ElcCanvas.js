@@ -1,4 +1,5 @@
 import { ElcImage } from "./ElcImage";
+import { utils } from "../utils/utils";
 import { fabricUtils } from "./fabricUtils";
 import { MouseZoomComponent } from "./MouseZoomComponent";
 import { EditableComponent } from "./EditableComponent";
@@ -36,6 +37,7 @@ export class ElcCanvas {
   } */
   init(canvasDom) {
     this.bus = bus;
+    this.delayRefresh = utils.debounce(this.customRefresh, 30);
     // this.initLayer();
     this.nodeMap = new Map();
     this.fCanvas = new fabric.Canvas(canvasDom, {
@@ -136,5 +138,14 @@ export class ElcCanvas {
   }
   refresh() {
     this.fCanvas.requestRenderAll();
+  }
+  customRefresh() {
+    const zoom = this.fCanvas.getZoom();
+    /** 有部分数据更新后，画布并没有正确刷新，必须调整了缩放才能刷新。所以暂时这里使用这个方法进行替代 */
+    this.fCanvas.zoomToPoint(new fabric.Point(0, 0), zoom * 1.00001);
+    this.fCanvas.renderAll();
+    this.fCanvas.zoomToPoint(new fabric.Point(0, 0), zoom * 1);
+    // this.fCanvas.zoomToPoint(new fabric.Point(0, 0), zoom);
+    // this.fCanvas.zoomToPoint(zoom);
   }
 }
