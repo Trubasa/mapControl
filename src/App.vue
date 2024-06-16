@@ -28,7 +28,7 @@ export default {
   name: "app",
   data() {
     return {
-      activeName: "second",
+      activeName: "first",
     };
   },
   methods: {

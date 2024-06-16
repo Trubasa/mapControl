@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="display: flex; flex-wrap: wrap">
+  <div class="demo-1" style="display: flex; flex-wrap: wrap">
     <!-- 左边 -->
     <div>
       <map-control
@@ -430,18 +430,18 @@ export default {
 
 <style scoped>
 /* 默认的左右布局 */
-#app {
+.demo-1 {
   display: flex;
 }
 
 /* 移动设备视口时的上下布局 */
 @media (max-width: 767px) {
-  #app {
+  .demo-1 {
     display: block;
   }
 
   /* 右边部分（现在是下方）的样式调整 */
-  #app > div {
+  .demo-1 > div {
     margin-left: 0;
     margin-top: 20px;
   }
